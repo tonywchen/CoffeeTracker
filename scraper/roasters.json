@@ -1,0 +1,96 @@
+{
+    "pilot": {
+        "name": "Pilot Coffee Roasters",
+        "active": false,
+        "pages": [
+            "https://www.pilotcoffeeroasters.com/coffee/single-origin/",
+            "https://www.pilotcoffeeroasters.com/coffee/blends/"
+        ],
+        "rules": {
+            "base": "body > main > section.collection-page > div.collection-products article.product-item",
+            "name": {
+                "match": ".product-item-details .product-item-title a",
+                "value": {
+                    "text": true
+                }
+            },
+            "image": {
+                "match": "a.product-item-thumbnail",
+                "value": {
+                    "attr": "data-product-compare-image"
+                }
+            },
+            "link": {
+                "match": ".product-item-details .product-item-title a",
+                "value": {
+                    "attr": "href"
+                }                
+            },
+            "isOutOfStock": {
+                "match": ".product-item-badges .badge-out-of-stock",
+                "value": {
+                    "exists": true
+                }
+            }
+        }
+    },
+    "hatch": {
+        "name": "Hatch",
+        "active": false,
+        "pages": [
+            "https://www.hatchcrafted.com/shop/origin/",
+            "https://www.hatchcrafted.com/shop/blend/",
+            "https://www.hatchcrafted.com/shop/decaf/"
+        ],
+        "rules": {
+            "base": "#collection-products .collection-product",
+            "name": {
+                "match": ".product-info .product-title",
+                "value": {
+                    "text": true
+                }
+            },
+            "image": {
+                "match": "> a > div.product_image",
+                "value": {
+                    "css": "background-image"
+                }
+            },
+            "link": {
+                "match": "> a",
+                "value": {
+                    "attr": "href"
+                }                
+            }
+        }
+    },
+    "pop": {
+        "name": "Pop Coffee Works",
+        "active": false,
+        "pages": [
+            "https://www.popcoffeeworks.com/shop"
+        ]
+    },
+    "subtext": {
+        "name": "Subtext Coffee",
+        "active": false,
+        "pages": [
+            "https://www.subtext.coffee/collections/coffee"
+        ]
+    },
+    "demello": {
+        "name": "De Mello Palheta",
+        "active": false,
+        "pages": [
+            "https://www.hellodemello.com/product-category/og-de-mello/",
+            "https://www.hellodemello.com/product-category/single-origin/"
+        ]
+    },
+    "propeller": {
+        "name": "Propeller Coffee",
+        "active": false,
+        "pages": [
+            "https://propellercoffee.com/collections/shop"
+        ]
+    }
+}
