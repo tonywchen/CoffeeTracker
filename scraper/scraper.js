@@ -15,6 +15,8 @@ const Scraper = () => {
                 continue;
             }
 
+            config._id = key;
+
             let results = await scraper.scrapeOne(config);
             allResults = allResults.concat(...results);
         };
@@ -38,7 +40,7 @@ const Scraper = () => {
 
     scraper.validateConfig = (config) => {
         if (!config.active) {
-            // return false;
+            return false;
         }
 
         if (!config.rules) {
@@ -74,6 +76,7 @@ const Scraper = () => {
 
             return {
                 roaster: config.name,
+                roasterId: config._id,
                 ...result
             };
         }).get();
