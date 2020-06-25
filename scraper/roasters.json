@@ -36,7 +36,7 @@
     },
     "hatch": {
         "name": "Hatch",
-        "active": false,
+        "active": true,
         "pages": [
             "https://www.hatchcrafted.com/shop/origin/",
             "https://www.hatchcrafted.com/shop/blend/",
@@ -69,7 +69,34 @@
         "active": false,
         "pages": [
             "https://www.popcoffeeworks.com/shop"
-        ]
+        ],
+        "rules": {
+            "base": ".ProductList .ProductList-item",
+            "name": {
+                "match": ".ProductList-title",
+                "value": {
+                    "text": true
+                }
+            },
+            "image": {
+                "match": "figure .ProductList-innerImageWrapper img",
+                "value": {
+                    "attr": "src"
+                }
+            },
+            "link": {
+                "match": "a.ProductList-link",
+                "value": {
+                    "attr": "href"
+                }                
+            },
+            "isOutOfStock": {
+                "match": "",
+                "value": {
+                    "hasClass": "sold-out"
+                }
+            }
+        }
     },
     "subtext": {
         "name": "Subtext Coffee",

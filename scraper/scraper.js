@@ -38,20 +38,12 @@ let Scraper = () => {
         let products = $(baseMatch);
 
         products.each((i, elem) => {
-            let nameElem = $(elem).find(config.rules.name.match);
-            let name = scraper.readValue(nameElem, config.rules.name.value);
+            elem = $(elem);
 
-            let imageElem = $(elem).find(config.rules.image.match);
-            let image = scraper.readValue(imageElem, config.rules.image.value);
-
-            let linkElem = $(elem).find(config.rules.link.match);
-            let link = scraper.readValue(linkElem, config.rules.link.value);
-
-            let isOutOfStock = false;
-            if (config.rules.isOutOfStock) {
-                let outOfStockElem = $(elem).find(config.rules.isOutOfStock.match);
-                isOutOfStock = !!scraper.readValue(outOfStockElem, config.rules.isOutOfStock.value);
-            }
+            let name = scraper.parseElem(config.rules.name, elem);
+            let image = scraper.parseElem(config.rules.image, elem);
+            let link = scraper.parseElem(config.rules.link, elem);
+            let isOutOfStock = !!scraper.parseElem(config.rules.isOutOfStock, elem);
 
             console.log(name);
             console.log(image);
@@ -61,27 +53,40 @@ let Scraper = () => {
         });
     };
 
-    scraper.readValue = (elem, valueRule) => {
+    scraper.parseElem = (rule = {}, elem) => {
+        let match = rule.match;
+        let el = (match)
+            ? elem.find(match)
+            : elem;
+
+        return scraper.parseValue(el, rule.value);
+    };
+
+    scraper.parseValue = (el, valueRule = {}) => {
         let result = null;
         
         if (valueRule.text) {
-            result = elem.text();
+            result = el.text();
         }
 
         if (valueRule.attr) {
-            result = elem.attr(valueRule.attr);
+            result = el.attr(valueRule.attr);
         }
 
         if (valueRule.css) {
-            result = elem.css(valueRule.css);
+            result = el.css(valueRule.css);
 
             if (valueRule.css == 'background-image') {
                 result = TRANSFORM['backgroundImage'].exec(result).groups.value
             }
         }
 
+        if (valueRule.hasClass) {
+            result = !!el.hasClass(valueRule.hasClass);
+        }
+
         if (valueRule.exists) {
-            result = !!elem.length;
+            result = !!el.length;
         }
 
         return result;
