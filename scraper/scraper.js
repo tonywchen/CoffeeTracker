@@ -1,111 +1,44 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const Parser = require('./Parser');
 
-const configs = require('./roasters.json');
-
-const TRANSFORM = {
-    backgroundImage: /\((?<value>.*?)\)/
-};
-
-let Scraper = () => {
+const Scraper = () => {
     const scraper = {};
 
-    scraper.run = (configs) => {
-        Object.keys(configs).forEach(key => {
+    scraper.scrape = async (configs) => {
+        let allResults = [];
+
+        for (let key of Object.keys(configs)) {
             let config = configs[key];
             let canProceed = scraper.validateConfig(config);
             if (!canProceed) {
-                return;
+                continue;
             }
 
-            scraper.scrape(config);
-        })        
+            let results = await scraper.scrapeOne(config);
+            allResults = allResults.concat(...results);
+        };
+        
+        return allResults;
     };
 
-    scraper.scrape = async (config) => {
+    scraper.scrapeOne = async (config) => {
+        let results = [];
+
         for (let page of config.pages) {
             let response = await axios(page);
             let html = response.data;
 
-            scraper.parse(html, config);
-        }
-    };
-
-    scraper.parse = (html, config) => {
-        const $ = cheerio.load(html);
-
-        let baseMatch = config.rules.base;
-        let products = $(baseMatch);
-
-        let data = products.map((i, elem) => {
-            elem = $(elem);
-
-            let name = scraper.parseElem(config.rules.name, elem);
-            let image = scraper.parseElem(config.rules.image, elem);
-            let link = scraper.parseElem(config.rules.link, elem);
-            let isOutOfStock = !!scraper.parseElem(config.rules.isOutOfStock, elem);
-
-            return {
-                roaster: config.name,
-                name,
-                image,
-                link,
-                isOutOfStock
-            }
-        }).get();
-
-        console.log(data);
-    };
-
-    scraper.parseElem = (rule = {}, elem) => {
-        let match = rule.match;
-        let el = (match)
-            ? elem.find(match)
-            : elem;
-
-        return scraper.parseValue(el, rule.value);
-    };
-
-    scraper.parseValue = (el, valueRule = {}) => {
-        let result = null;
-        
-        if (valueRule.text) {
-            result = el.text();
+            let result = scraper.parse(html, config);
+            results.push(result);
         }
 
-        if (valueRule.attr) {
-            result = el.attr(valueRule.attr);
-
-            // for now, workaround for dynamic data-src
-            if (valueRule.params) {
-                Object.keys(valueRule.params).forEach(key => {
-                    result = result.replace(`{${key}}`, valueRule.params[key]);
-                });
-            }
-        }
-
-        if (valueRule.css) {
-            result = el.css(valueRule.css);
-
-            if (valueRule.css == 'background-image') {
-                result = TRANSFORM['backgroundImage'].exec(result).groups.value
-            }
-        }
-
-        if (valueRule.hasClass) {
-            result = !!el.hasClass(valueRule.hasClass);
-        }
-
-        if (valueRule.exists) {
-            result = !!el.length;
-        }
-
-        return result;
+        return results;
     };
 
     scraper.validateConfig = (config) => {
         if (!config.active) {
-            return false;
+            // return false;
         }
 
         if (!config.rules) {
@@ -121,11 +54,34 @@ let Scraper = () => {
         }
 
         return true;
-    }
+    };
+
+    scraper.parse = (html, config) => {
+        const $ = cheerio.load(html);
+
+        let baseMatch = config.rules.base;
+        let products = $(baseMatch);
+
+        let data = products.map((i, elem) => {
+            let parser = Parser($(elem), config.rules);
+
+            let result = parser.run()
+                            .name()
+                            .image()
+                            .link()
+                            .isOutOfStock()
+                        .get();
+
+            return {
+                roaster: config.name,
+                ...result
+            };
+        }).get();
+
+        return data;
+    };
 
     return scraper;
 };
 
-let scraper = Scraper();
-scraper.run(configs);
-
+module.exports = Scraper;
