@@ -37,7 +37,7 @@ let Scraper = () => {
         let baseMatch = config.rules.base;
         let products = $(baseMatch);
 
-        products.each((i, elem) => {
+        let data = products.map((i, elem) => {
             elem = $(elem);
 
             let name = scraper.parseElem(config.rules.name, elem);
@@ -45,12 +45,16 @@ let Scraper = () => {
             let link = scraper.parseElem(config.rules.link, elem);
             let isOutOfStock = !!scraper.parseElem(config.rules.isOutOfStock, elem);
 
-            console.log(name);
-            console.log(image);
-            console.log(link);
-            console.log(isOutOfStock);
-            console.log('-----------');
-        });
+            return {
+                roaster: config.name,
+                name,
+                image,
+                link,
+                isOutOfStock
+            }
+        }).get();
+
+        console.log(data);
     };
 
     scraper.parseElem = (rule = {}, elem) => {
@@ -71,6 +75,13 @@ let Scraper = () => {
 
         if (valueRule.attr) {
             result = el.attr(valueRule.attr);
+
+            // for now, workaround for dynamic data-src
+            if (valueRule.params) {
+                Object.keys(valueRule.params).forEach(key => {
+                    result = result.replace(`{${key}}`, valueRule.params[key]);
+                });
+            }
         }
 
         if (valueRule.css) {

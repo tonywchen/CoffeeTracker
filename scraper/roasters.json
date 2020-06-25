@@ -36,7 +36,7 @@
     },
     "hatch": {
         "name": "Hatch",
-        "active": true,
+        "active": false,
         "pages": [
             "https://www.hatchcrafted.com/shop/origin/",
             "https://www.hatchcrafted.com/shop/blend/",
@@ -81,11 +81,11 @@
             "image": {
                 "match": "figure .ProductList-innerImageWrapper img",
                 "value": {
-                    "attr": "src"
+                    "attr": "data-src"
                 }
             },
             "link": {
-                "match": "a.ProductList-link",
+                "match": "a.ProductList-item-link",
                 "value": {
                     "attr": "href"
                 }                
@@ -103,7 +103,37 @@
         "active": false,
         "pages": [
             "https://www.subtext.coffee/collections/coffee"
-        ]
+        ],
+        "rules": {
+            "base": ".ProductList .ProductItem",
+            "name": {
+                "match": ".ProductItem__Title a",
+                "value": {
+                    "text": true
+                }
+            },
+            "image": {
+                "match": ".ProductItem__Image",
+                "value": {
+                    "attr": "data-src",
+                    "params": {
+                        "width": 400
+                    }
+                }
+            },
+            "link": {
+                "match": ".ProductItem__Title a",
+                "value": {
+                    "attr": "href"
+                }                
+            },
+            "isOutOfStock": {
+                "match": ".ProductItem__LabelList .ProductItem__Label",
+                "value": {
+                    "exists": true
+                }
+            }
+        }
     },
     "demello": {
         "name": "De Mello Palheta",
@@ -111,13 +141,55 @@
         "pages": [
             "https://www.hellodemello.com/product-category/og-de-mello/",
             "https://www.hellodemello.com/product-category/single-origin/"
-        ]
+        ],
+        "rules": {
+            "base": ".site-main ul.products > li",
+            "name": {
+                "match": "h2.woocommerce-loop-product__title",
+                "value": {
+                    "text": true
+                }
+            },
+            "image": {
+                "match": "img.attachment-woocommerce_thumbnail",
+                "value": {
+                    "attr": "src"
+                }
+            },
+            "link": {
+                "match": "a.woocommerce-loop-product__link",
+                "value": {
+                    "attr": "href"
+                }                
+            }
+        }
     },
     "propeller": {
         "name": "Propeller Coffee",
-        "active": false,
+        "active": true,
         "pages": [
             "https://propellercoffee.com/collections/shop"
-        ]
+        ],
+        "rules": {
+            "base": ".product-list .prod-block",
+            "name": {
+                "match": ".prod-caption > a .title span",
+                "value": {
+                    "text": true
+                }
+            },
+            "image": {
+                "match": ".prod-image-wrap img",
+                "value": {
+                    "attr": "src"
+                }
+            },
+            "link": {
+                "match": ".prod-caption > a",
+                "value": {
+                    "attr": "href"
+                }                
+            }
+        }
     }
 }
