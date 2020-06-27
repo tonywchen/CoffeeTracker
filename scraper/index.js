@@ -1,12 +1,12 @@
 const mongo = require('mongodb');
 
-const Scraper = require('./scraper');
-const MongoClient = require('./mongo');
+const Scraper = require('../scraper/scraper');
+const MongoClient = require('../service/mongo');
 
-const Product = require('./models/product');
-const ProductUpdate = require('./models/product-update');
-const Roaster = require('./models/roaster');
-const RoasterUpdate = require('./models/roaster-update');
+const Product = require('../models/product');
+const ProductUpdate = require('../models/product-update');
+const Roaster = require('../models/roaster');
+const RoasterUpdate = require('../models/roaster-update');
 
 const configs = require('./roasters.json');
 

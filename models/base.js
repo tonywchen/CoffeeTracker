@@ -1,5 +1,5 @@
 const mongo = require('mongodb');
-const MongoClient = require('../mongo');
+const MongoClient = require('../service/mongo');
 
 class BaseModel {
 
@@ -12,6 +12,12 @@ class BaseModel {
         if (!this.collection) {
             throw new Error('collection name not defined');
         }
+    }
+
+    static async exists(query) {
+        let results = await this.find(query);
+
+        return results.length;
     }
 
     static async get(id) {
