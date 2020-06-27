@@ -1,0 +1,17 @@
+{
+  "name": "coffee-stock-tracker",
+  "version": "1.0.0",
+  "description": "**TL;DR** A tracker similar to Amazon price tracker but checks for coffee bean stock status across different coffee roasters.",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "mongodb": "^3.5.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
