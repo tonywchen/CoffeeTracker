@@ -2,7 +2,7 @@
 //   _id                database id
 //   roaster_id         database id of the roaster
 //   timestamp          timestamp when the scraping alert
-//   rule               rule used to scrape the website (optional?)
+//   rules              rules used to scrape the website (optional?)
 //   status             status of the scraping (SUCCESS, NO_CONNECTION, INVALID, FAIL, etc)
 
 const BaseModel = require('./base');
@@ -35,5 +35,8 @@ class RoasterUpdate extends BaseModel {
         return { ...obj };
     }
 }
+
+RoasterUpdate.STATUS_SUCCESS = 'success';
+RoasterUpdate.STATUS_FAIL = 'fail';
 
 module.exports = RoasterUpdate;

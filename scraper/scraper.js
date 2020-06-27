@@ -15,24 +15,29 @@ const Scraper = () => {
                 continue;
             }
 
-            config._id = key;
+            config.fid = key;
 
             let results = await scraper.scrapeOne(config);
-            allResults = allResults.concat(...results);
+            allResults.push(results);
         };
         
         return allResults;
     };
 
     scraper.scrapeOne = async (config) => {
-        let results = [];
+        let results = {
+            name: config.name,
+            fid: config.fid,
+            rules: config.rules,
+            products: []
+        };
 
         for (let page of config.pages) {
             let response = await axios(page);
             let html = response.data;
 
-            let result = scraper.parse(html, config);
-            results.push(result);
+            let products = scraper.parse(html, config, page);
+            results.products.push(...products);
         }
 
         return results;
@@ -58,7 +63,7 @@ const Scraper = () => {
         return true;
     };
 
-    scraper.parse = (html, config) => {
+    scraper.parse = (html, config, baseUrl) => {
         const $ = cheerio.load(html);
 
         let baseMatch = config.rules.base;
@@ -70,15 +75,11 @@ const Scraper = () => {
             let result = parser.run()
                             .name()
                             .image()
-                            .link()
+                            .link({ baseUrl })
                             .isOutOfStock()
                         .get();
 
-            return {
-                roaster: config.name,
-                roasterId: config._id,
-                ...result
-            };
+            return result
         }).get();
 
         return data;

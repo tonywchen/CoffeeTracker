@@ -2,7 +2,7 @@
 //   _id                database id
 //   productId          database id of the product
 //   timestamp          timestamp of the udpate
-//   status             availability of the product (AVAILABLE, UNAVAILABLE, UNKNOWN)
+//   status             availability of the product (AVAILABLE, UNAVAILABLE_IMPLICIT, UNAVAILABLE_EXPLICIT)
 
 const BaseModel = require('./base');
 
@@ -38,5 +38,8 @@ class ProductUpdate extends BaseModel {
         this.constructor.save(getObj());
     }
 }
+
+ProductUpdate.STATUS_AVAILABLE = 'available';
+ProductUpdate.STATUS_UNAVAILABLE = 'unavailable';
 
 module.exports = ProductUpdate;

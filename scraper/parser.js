@@ -1,5 +1,6 @@
-const TRANSFORM = {
-    backgroundImage: /\((?<value>.*?)\)/
+const PATTERN = {
+    backgroundImage: /\((?<value>.*?)\)/,
+    absolutePath: /^(http|https|http:|https:|\/\/)/
 };
 
 const Parser = (root, rules) => {
@@ -35,7 +36,7 @@ const Parser = (root, rules) => {
             result = elem.css(valueRule.css);
 
             if (valueRule.css == 'background-image') {
-                result = TRANSFORM['backgroundImage'].exec(result).groups.value
+                result = PATTERN['backgroundImage'].exec(result).groups.value
             }
         }
 
@@ -65,25 +66,32 @@ const Parser = (root, rules) => {
     };
 
     let runner = {
-        name: () => {
+        name: (params) => {
             let name = parser._parseElem(rules.name);
             result.name = name;
 
             return runner
         },
-        image: () => {
+        image: (params) => {
             let image = parser._parseElem(rules.image);
             result.image = image;
 
             return runner;
         },
-        link: () => {
+        link: (params) => {
             let link = parser._parseElem(rules.link);
+            let isAbsolutePath = !!PATTERN['absolutePath'].exec(link);
+
+            if (!isAbsolutePath) {
+                let url = new URL(link, params.baseUrl);
+                link = url.href;
+            }
+
             result.link = link;
 
             return runner;
         },
-        isOutOfStock: () => {
+        isOutOfStock: (params) => {
             let isOutOfStock = parser._parseElem(rules.isOutOfStock);
             result.isOutOfStock = !!isOutOfStock;
 
