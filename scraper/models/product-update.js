@@ -18,7 +18,7 @@ class ProductUpdate extends BaseModel {
 
     static fromObject(object) {
         let productUpdate = new ProductUpdate();
-        productUpdate.setObject(object);
+        productUpdate.setObj(object);
 
         return product;
     }

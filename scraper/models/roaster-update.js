@@ -19,7 +19,7 @@ class RoasterUpdate extends BaseModel {
 
     static fromObject(object) {
         let roasterUpdate = new RoasterUpdate();
-        roasterUpdate.setObject(object);
+        roasterUpdate.setObj(object);
 
         return roaster;
     }

@@ -16,7 +16,7 @@ class Roaster extends BaseModel {
 
     static fromObject(object) {
         let roaster = new Roaster();
-        roaster.setObject(object);
+        roaster.setObj(object);
 
         return roaster;
     }

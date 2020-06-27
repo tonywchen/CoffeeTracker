@@ -19,7 +19,7 @@ class Product extends BaseModel {
 
     static fromObject(object) {
         let product = new Product();
-        product.setObject(object);
+        product.setObj(object);
 
         return product;
     }
