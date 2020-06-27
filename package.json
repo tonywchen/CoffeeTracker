@@ -1,17 +1,38 @@
 {
   "name": "coffee-stock-tracker",
-  "version": "1.0.0",
-  "description": "**TL;DR** A tracker similar to Amazon price tracker but checks for coffee bean stock status across different coffee roasters.",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
-    "mongodb": "^3.5.9"
+    "express": "^4.17.1",
+    "mongodb": "^3.5.9",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "author": "",
-  "license": "ISC"
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
