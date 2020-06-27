@@ -13,6 +13,7 @@ class Product extends BaseModel {
     static collection = 'product';
 
     constructor() {        
+        super();
         this.obj = {}
     }
 

@@ -10,6 +10,7 @@ class ProductUpdate extends BaseModel {
     static collection = 'product_update';
 
     constructor(productId) {        
+        super();
         this.obj = {
             productId: productId
         }

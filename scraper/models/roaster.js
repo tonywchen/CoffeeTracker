@@ -9,7 +9,8 @@ const BaseModel = require('./base');
 class Roaster extends BaseModel {
     static collection = 'roaster';
 
-    constructor() {        
+    constructor() {
+        super();
         this.obj = {}
     }
 

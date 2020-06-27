@@ -11,6 +11,7 @@ class RoasterUpdate extends BaseModel {
     static collection = 'roaster_update';
 
     constructor(roasterId) {        
+        super();
         this.obj = {
             roasterId: roasterId
         }
