@@ -5,13 +5,15 @@ const URL = 'mongodb://localhost:27017';
 const DBNAME = 'coffee-stock';
 
 // Mongo client variables
-const client = new MongoClient(URL);
+const client = new MongoClient(URL, {
+    useUnifiedTopology: true
+});
 let db;
 
 const connect = async () => {
     await client.connect();
     
-    console.log('success!');
+    console.log('Connected to Database!');
     db = client.db(DBNAME);
 };
 
