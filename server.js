@@ -1,9 +1,15 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
+const cors = require('cors');
+
+const port = 3001;
+const corsOptions = {
+    origin: 'http://localhost:3000'
+};
 
 const MongoClient = require('./service/mongo');
 
+app.use(cors(corsOptions));
 app.use(require('./routes'));
 
 MongoClient.connect();
