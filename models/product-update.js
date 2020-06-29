@@ -35,7 +35,7 @@ class ProductUpdate extends BaseModel {
     }
 
     save() {
-        this.constructor.save(getObj());
+        return this.constructor.save(getObj());
     }
 }
 
