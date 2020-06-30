@@ -20,7 +20,8 @@ let ProductService  = {
             timestamp: {
                 '$gte': from,
                 '$lt': to
-            }
+            },
+            status: ProductUpdate.STATUS_AVAILABLE
         };
         console.log(query);
 

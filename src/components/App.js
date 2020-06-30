@@ -1,10 +1,15 @@
 import React from 'react';
 import ProductList from './ProductList';
 
+import '../styles.scss';
+
+
 class App extends React.Component {
     render() {
         return (
-            <ProductList />
+            <main className="ui container">
+                <ProductList />
+            </main>
         );
     }
 }

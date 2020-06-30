@@ -1,0 +1,48 @@
+body {
+    font-size: 10px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+}
+
+.statuses {
+    display: flex;
+    text-align: center;
+}
+
+.status {
+    flex: 1;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    
+    &.positive {
+        background-color: #fcfff5;
+        color: #1a531b;
+    }
+
+    &.negative {
+        background-color: #fff6f6;
+        color: #9f3a38;
+    }
+
+    .icon {
+        margin: 0.25em;
+    }
+}
+
+@media only screen and (min-width: 933px) {
+    .product {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .product__name {
+        width: 240px;
+    }
+
+    .statuses {
+        flex: 1;
+    }
+}

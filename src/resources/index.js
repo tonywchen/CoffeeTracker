@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const connect = () => {
     return axios.create({
-        baseURL: 'http://localhost:3001'
+        baseURL: 'http://0.0.0.0:3001'
     });
 };
 
