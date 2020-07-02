@@ -1,5 +1,5 @@
 const PATTERN = {
-    backgroundImage: /\((?<value>.*?)\)/,
+    backgroundImage: /\('(?<value>.*?)'\)/,
     absolutePath: /^(http|https|http:|https:|\/\/)/
 };
 
