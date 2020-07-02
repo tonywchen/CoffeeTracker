@@ -63,7 +63,7 @@ const addProductUpdate = async (productData, updateTimestamp) => {
 
     await ProductUpdate.save({
         productId: productId,
-        productName: productData.productName,
+        productName: productData.name,
         roasterName: productData.roasterName,
         timestamp: updateTimestamp,
         status: status
