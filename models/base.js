@@ -46,6 +46,15 @@ class BaseModel {
         return result;
     }
 
+    static async aggregate(aggregate) {
+        this._validate();
+
+        let db = MongoClient.get();
+        let results = await db.collection(this.collection).aggregate(aggregate).toArray();
+
+        return results;        
+    }
+
     static async save(obj) {
         this._validate();
 

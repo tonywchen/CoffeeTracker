@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 const ProductUpdate = require('../models/product-update');
 
-const DEFAULT_RECENT_DURATION = 60 * 60 * 24 * 1000 * 2; // 2 days
+const DEFAULT_RECENT_DURATION = 60 * 60 * 24 * 1000 * 7; // 7 days
 
 let ProductService  = {
     findAllProducts: async () => {
@@ -16,17 +16,8 @@ let ProductService  = {
         let to = new Date().getTime();
         let from = to - DEFAULT_RECENT_DURATION;
 
-        let query = {
-            timestamp: {
-                '$gte': from,
-                '$lt': to
-            },
-            status: ProductUpdate.STATUS_AVAILABLE
-        };
-        console.log(query);
-
         // TODO: consider pagination?
-        let productUpdates = await ProductUpdate.find(query);
+        let productUpdates = await ProductUpdate.findWithDetail(from, to);
         let productMap = {};
         for (let productUpdate of productUpdates) {
             let productId = productUpdate.productId;
@@ -34,7 +25,9 @@ let ProductService  = {
             if (!product) {
                 product = {
                     productId: productId,
-                    productName: productUpdate.productName,
+                    productName: productUpdate.name,
+                    productLink: productUpdate.link,
+                    productImage: productUpdate.image,
                     roasterName: productUpdate.roasterName,
                     updates: []
                 };
