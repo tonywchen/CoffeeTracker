@@ -1,10 +1,27 @@
 body {
     font-size: 10px;
+    margin-left: -1em; // to counter negative margin on `.ui.container` set by semantic-ui
+    margin-right: -1em; // to counter negative margin on `.ui.container` set by semantic-ui
 }
 
 .product {
     display: flex;
     flex-direction: column;
+
+    .product__image {
+        display: none;
+    }
+
+    .product__name {
+        display: flex;
+        align-items: center;
+    }
+
+    .product__name-inner {
+        font-size: 1.4em;
+        line-height: 1.2em;
+        padding: 0.75em 0.25em;        
+    }
 }
 
 .statuses {
@@ -13,9 +30,11 @@ body {
 }
 
 .status {
+    display: flex;
     flex: 1;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    align-items: center;
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
     
     &.positive {
         background-color: #fcfff5;
@@ -27,19 +46,40 @@ body {
         color: #9f3a38;
     }
 
+    .status__inner {
+        flex: 1;
+    }
+
     .icon {
         margin: 0.25em;
     }
 }
 
 @media only screen and (min-width: 933px) {
-    .product {
-        flex-direction: row;
-        align-items: center;
+    body {
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .product__name {
-        width: 240px;
+    .product {
+        flex-direction: row;
+        align-items: stretch;
+
+        .product__image {
+            display: block;
+            
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
+    
+        .product__name {
+            width: 240px;
+        }
+
+        .product__name-inner {
+            padding: 0.5em 1em;
+        }
     }
 
     .statuses {
