@@ -4,6 +4,16 @@ import { fetchProducts } from '../actions';
 
 import moment from 'moment';
 
+const getUniqueTimestamps = (products) => {
+    const allTimestamps = [];
+    for (let product of products) {
+        allTimestamps.push(...product.updates);
+    }
+    const uniqueTimestamps = Array.from(new Set(allTimestamps)).sort();
+
+    return uniqueTimestamps;
+};
+
 class ProductList extends React.Component {
     componentDidMount() {
         this.props.fetchProducts();
@@ -14,11 +24,7 @@ class ProductList extends React.Component {
             return 'Empty List';
         }
 
-        const allUpdates = [];
-        for (let product of this.props.products) {
-            allUpdates.push(...product.updates);
-        }
-        const uniqueUpdates = Array.from(new Set(allUpdates)).sort();
+        const uniqueUpdates = getUniqueTimestamps(this.props.products);
 
         return this.props.products.map(p => {
             let statuses = uniqueUpdates.map(u => {
@@ -30,20 +36,25 @@ class ProductList extends React.Component {
 
                 return (
                     <div className={containerClass}>
-                        <div>{date}</div>
-                        <i className={iconClass} />
+                        <div className="status__inner">
+                            <div>{date}</div>
+                            <i className={iconClass} />
+                        </div>
                     </div>
                 );
             });
 
             return (
-                <div className="ui relaxed divided list">
-                    <div key={p.productId} className="item">
-                        <div class="product">
-                            <h5 className="product__name">{p.productName}</h5>
-                            <div className="statuses">
-                                {statuses}
+                <div key={p.productId} className="item">
+                    <div class="product">
+                        <img src={p.productImage} className="product__image"></img>
+                        <div className="product__name">
+                            <div className="product__name-inner">
+                                {p.productName}
                             </div>
+                        </div>
+                        <div className="statuses">
+                            {statuses}
                         </div>
                     </div>
                 </div>
@@ -52,7 +63,11 @@ class ProductList extends React.Component {
     }
 
     render() {
-        return this.renderList();
+        return (
+            <div className="ui divided list">
+                {this.renderList()}
+            </div>
+        )
     }
 }
 
