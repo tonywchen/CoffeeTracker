@@ -25,9 +25,10 @@ const Scraper = () => {
     };
 
     scraper.scrapeOne = async (config) => {
-        let results = {
+        let result = {
             name: config.name,
             fid: config.fid,
+            timezone: config.timezone,
             rules: config.rules,
             products: []
         };
@@ -37,10 +38,10 @@ const Scraper = () => {
             let html = response.data;
 
             let products = scraper.parse(html, config, page);
-            results.products.push(...products);
+            result.products.push(...products);
         }
 
-        return results;
+        return result;
     };
 
     scraper.validateConfig = (config) => {

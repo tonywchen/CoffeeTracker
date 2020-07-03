@@ -22,7 +22,8 @@ const findOrCreateRoaster = async (roasterData) => {
     if (!roaster) {
         roaster = await Roaster.save({
             name: roasterData.name,
-            fid: roasterData.fid
+            fid: roasterData.fid,
+            timezone: roasterData.timezone
         });
     }
 
@@ -53,7 +54,7 @@ const findOrCreateProduct = async (productData, roasterId) => {
     return product;
 };
 
-const addProductUpdate = async (productData, updateTimestamp) => {
+const addProductUpdate = async (productData, updateTimestamp, timezone) => {
     let productId = productData.productId;
     let isOutOfStock = productData.isOutOfStock;
 
@@ -64,39 +65,12 @@ const addProductUpdate = async (productData, updateTimestamp) => {
     await ProductUpdate.save({
         productId: productId,
         productName: productData.name,
+        roasterId: productData.roasterId,
         roasterName: productData.roasterName,
         timestamp: updateTimestamp,
-        status: status
+        status: status,
+        dateString: moment(updateTimestamp).tz(timezone).format('YYYY/MM/DD')
     });
-};
-
-const syncProductUpdates = async () => {
-    let roasters = await Roaster.find({});
-    let roasterMap = {};
-    for (let roaster of roasters) {
-        roasterMap[roaster._id] = roaster;
-    }
-
-    let products = await Product.find({});
-    let productMap = {};
-    for (let product of products) {
-        productMap[product._id] = product;
-    }
-
-    let productUpdates = await ProductUpdate.find({});
-    for (let productUpdate of productUpdates) {
-        let product = productMap[productUpdate.productId];
-        let roaster = roasterMap[product.roasterId];
-
-        let update = {
-            '$set': {
-                productName: product.name,
-                roasterName: roaster.name
-            }
-        }
-
-        ProductUpdate.update({_id: productUpdate._id}, update);
-    }
 };
 
 (async () => {
@@ -112,9 +86,10 @@ const syncProductUpdates = async () => {
         for (let productData of roasterData.products) {
             let product = await findOrCreateProduct(productData, roaster._id);
             productData.productId = product._id;
+            productData.roasterId = roaster._id;
             productData.roasterName = roaster.name;
 
-            await addProductUpdate(productData, updateTimestamp);
+            await addProductUpdate(productData, updateTimestamp, roaster.timezone);
         }
     }
 })();
