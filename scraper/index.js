@@ -39,7 +39,10 @@ const addRoasterUpdate = async (roaster, updateTimestamp, rules) => {
     });
 };
 
-const findOrCreateProduct = async (productData, roasterId) => {
+const findOrCreateProduct = async (productData, roaster, updateTimestamp) => {
+    let roasterId = roaster._id;
+    let timezone = roaster.timezone;
+
     let product = await Product.findOne({fid: productData.link});
     if (!product) {
         product = await Product.save({
@@ -47,7 +50,11 @@ const findOrCreateProduct = async (productData, roasterId) => {
             fid: productData.link,
             roasterId: new mongo.ObjectID(roasterId),
             image: productData.image,
-            link: productData.link
+            link: productData.link,
+            metrics: {
+                created: updateTimestamp,
+                createDate: moment(updateTimestamp).tz(timezone).format('YYYY/MM/DD')
+            }
         });
     }
 
@@ -84,7 +91,7 @@ const addProductUpdate = async (productData, updateTimestamp, timezone) => {
         await addRoasterUpdate(roaster._id, updateTimestamp, roasterData.rules)
 
         for (let productData of roasterData.products) {
-            let product = await findOrCreateProduct(productData, roaster._id);
+            let product = await findOrCreateProduct(productData, roaster, updateTimestamp);
             productData.productId = product._id;
             productData.roasterId = roaster._id;
             productData.roasterName = roaster.name;

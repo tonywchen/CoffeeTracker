@@ -1,3 +1,5 @@
+const mongo = require('mongodb');
+
 const MongoClient = require('../service/mongo');
 
 const Product = require('../models/product');
@@ -5,6 +7,46 @@ const ProductUpdate = require('../models/product-update');
 const Roaster = require('../models/roaster');
 
 const moment = require('moment-timezone');
+
+const syncProducts = async() => {
+    let match = {
+        status: ProductUpdate.STATUS_AVAILABLE
+    };
+
+    let group = {
+        _id: '$productId',
+        firstTimestamp: {
+            '$min': '$timestamp'
+        },
+        firstDateString: {
+            '$min': '$dateString'
+        }
+    };
+
+    let aggregate = [{
+        '$match': match
+    }, {
+        '$group': group
+    }];
+
+    let productUpdates = await ProductUpdate.aggregate(aggregate);
+    for (let productUpdate of productUpdates) {
+        console.log(productUpdate);
+        let productId = productUpdate._id;
+        let metrics = {
+            created: productUpdate.firstTimestamp,
+            createDate: productUpdate.firstDateString
+        }
+
+        let update = {
+            '$set': {
+                metrics: metrics
+            }
+        };
+
+        await Product.update({_id: new mongo.ObjectID(productId)}, update);
+    }
+};
 
 const syncProductUpdates = async () => {
     let roasters = await Roaster.find({});
@@ -34,14 +76,13 @@ const syncProductUpdates = async () => {
             }
         }
 
-        console.log(update['$set']);
-
-        ProductUpdate.update({_id: productUpdate._id}, update);
+        await ProductUpdate.update({_id: productUpdate._id}, update);
     }
 };
 
 (async () => {
     await MongoClient.connect();
 
+    await syncProducts();
     await syncProductUpdates();
 })();
