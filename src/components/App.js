@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductList from './ProductList';
+import ProductView from './ProductView';
 
 import '../styles.scss';
 
@@ -8,7 +8,7 @@ class App extends React.Component {
     render() {
         return (
             <main className="ui container">
-                <ProductList />
+                <ProductView />
             </main>
         );
     }
