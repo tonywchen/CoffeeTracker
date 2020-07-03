@@ -7,6 +7,39 @@
 const BaseModel = require('./base');
 const Product = require('./product');
 
+const moment = require('moment');
+
+const getDatesBetween = (from, to) => {
+    let fromDate = moment(from).startOf('day');
+    let toDate = moment(to).startOf('day');
+
+    let currentDate = fromDate;
+    let dates = [];
+    while (!fromDate.isAfter(toDate)) {
+        dates.push(currentDate.format('YYYY/MM/DD'));
+        currentDate = currentDate.add(1, 'day');
+    }
+
+    return dates;
+};
+
+const mapUpdatesAcorssDates = (updates, dates) => {
+    let updateMap = {};
+    for (let date of dates) {
+        updateMap[date] = 0;
+    }
+
+    for (let {dateString, count} of updates) {
+        if (updateMap[dateString] === undefined) {
+            continue;
+        }
+
+        updateMap[dateString] += count;
+    }
+
+    return updateMap;
+}
+
 class ProductUpdate extends BaseModel {
     static collection = 'product_update';
 
@@ -40,6 +73,8 @@ class ProductUpdate extends BaseModel {
     }
 
     static async findWithDetail(from, to) {
+        let dates = getDatesBetween(from, to);
+
         let match = {
             timestamp: {
                 '$gte': from,
@@ -55,26 +90,60 @@ class ProductUpdate extends BaseModel {
             as: 'details'
         };
 
+        let groupByProductAndDate = {
+            _id: {
+                productId: '$productId',
+                dateString: '$dateString',
+            },
+            count: { '$sum': 1 },
+            dateString: { '$first': '$dateString' },
+            productId: { '$first': '$productId' },
+            productName: { '$first': '$productName' },
+            roasterName: { '$first': '$roasterName' },
+            details: { '$first': '$details' }
+        };
+
+        let groupByProduct = {
+            _id: {
+                productId: '$productId'
+            },
+            dateString: { '$first': '$dateString' },
+            productId: { '$first': '$productId' },
+            productName: { '$first': '$productName' },
+            roasterName: { '$first': '$roasterName' },
+            details: { '$first': '$details' },
+            updates: { '$push': {
+                dateString: '$_id.dateString',
+                count: '$count'
+            }}
+        };
+
         let aggregate = [{
             '$match': match
         }, {
             '$lookup': lookup
+        }, {
+            '$group': groupByProductAndDate
+        }, {
+            '$group': groupByProduct
         }];
 
         let rawResults = await this.aggregate(aggregate);
-        let results = rawResults.map(({productId, timestamp, productName, roasterName, details}) => {
+        let results = rawResults.map(({productId, updates, productName, roasterName, details}) => {
             let detail = (details)? details[0] : {};
+            
+            let updateMap = mapUpdatesAcorssDates(updates, dates);
 
             return {
                 productId,
-                timestamp,
-                name: productName,
-                link: detail.link,
-                image: detail.image,
-                roasterName: roasterName
+                productName: productName,
+                productLink: detail.link,
+                productImage: detail.image,
+                roasterName: roasterName,
+                updates: updateMap
             };
         });
-        
+
         return results;
     }
 }

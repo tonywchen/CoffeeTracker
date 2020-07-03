@@ -1,61 +1,48 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { fetchProducts } from '../actions'; 
 
-import moment from 'moment';
-
-const getUniqueTimestamps = (products) => {
-    const allTimestamps = [];
-    for (let product of products) {
-        allTimestamps.push(...product.updates);
-    }
-    const uniqueTimestamps = Array.from(new Set(allTimestamps)).sort();
-
-    return uniqueTimestamps;
-};
+import Product from './Product';
 
 class ProductList extends React.Component {
     componentDidMount() {
         this.props.fetchProducts();
     }
 
-    renderList() {
+    renderList(products) {
         if (!this.props.products) {
             return 'Empty List';
         }
+        
+        return products.map(p => {
+            return <Product product={p}></Product>
+        });
+    }
 
-        const uniqueUpdates = getUniqueTimestamps(this.props.products);
+    renderLists() {
+        let groups = {};
+        for (let product of this.props.products) {
+            let roasterName = product.roasterName;
+            let group = groups[roasterName];
+            if (!group) {
+                group = [];
+                groups[roasterName] = group;
+            }
 
-        return this.props.products.map(p => {
-            let statuses = uniqueUpdates.map(u => {
-                let updateExists = p.updates.indexOf(u) > -1;
-                let iconClass = (updateExists)? 'icon check circle' : 'icon ban';
-                let containerClass = (updateExists)? 'status positive' : 'status negative';
+            group.push(product);
+        }
 
-                let date = moment(u).format('MM/DD');
+        console.log(groups);
 
-                return (
-                    <div className={containerClass}>
-                        <div className="status__inner">
-                            <div>{date}</div>
-                            <i className={iconClass} />
-                        </div>
-                    </div>
-                );
-            });
-
+        return Object.keys(groups).sort().map(roasterName => {
             return (
-                <div key={p.productId} className="item">
-                    <div class="product">
-                        <img src={p.productImage} className="product__image"></img>
-                        <div className="product__name">
-                            <div className="product__name-inner">
-                                {p.productName}
-                            </div>
-                        </div>
-                        <div className="statuses">
-                            {statuses}
-                        </div>
+                <div className="roaster">
+                    <div className="roaster__name">
+                        {roasterName}
+                    </div>
+                    <div className="ui divided list">
+                        {this.renderList(groups[roasterName])}
                     </div>
                 </div>
             );
@@ -64,8 +51,8 @@ class ProductList extends React.Component {
 
     render() {
         return (
-            <div className="ui divided list">
-                {this.renderList()}
+            <div>
+                {this.renderLists()}
             </div>
         )
     }
