@@ -73,12 +73,17 @@ body {
     padding-top: 1.5em;
     padding-bottom: 1.5em;
     
-    &.positive {
+    &.new {
+        background-color: #1a531b;
+        color: #ffffff;
+    }
+
+    &.available {
         background-color: #fcfff5;
         color: #1a531b;
     }
 
-    &.negative {
+    &.unavailable {
         background-color: #fff6f6;
         color: #9f3a38;
     }

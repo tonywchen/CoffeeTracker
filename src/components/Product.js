@@ -14,20 +14,32 @@ class Product extends React.Component {
     };
 
     render() {
-        let {productId, productImage, productName, updates} = this.props.product;
-        let currentlyAvailable = false;
+        let {productId, productImage, productName, updates, createDate} = this.props.product;
+        let currentAvailability = 0;
 
         let statuses = Object.keys(updates).sort().map(dateString => {
             let isAvailable = updates[dateString];
-            let iconClass = (isAvailable)? 'icon check circle' : 'icon ban';
-            let containerClass = (isAvailable)? 'status positive' : 'status negative';
 
-            let date = moment(dateString).format('MM/DD');
+            let iconClass = 'icon ban';
+            let containerClass = 'status unavailable';
 
-            currentlyAvailable = isAvailable;
+            if (isAvailable) {
+                if (dateString === createDate) {
+                    iconClass = 'icon star';
+                    currentAvailability = 2;
+                    containerClass = 'status new';
+                } else {
+                    iconClass = 'icon check';
+                    currentAvailability = 1;
+                    containerClass = 'status available';
+                }
+            } else {
+                currentAvailability = 0;
+            }
+            let date = moment(dateString, 'YYYY/MM/DD').format('MM/DD');
 
             return (
-                <div className={containerClass}>
+                <div className={containerClass} key={`${productId}-${date}`}>
                     <div className="status__inner">
                         <div>{date}</div>
                         <i className={iconClass} />
@@ -39,16 +51,26 @@ class Product extends React.Component {
         let productClasses = [
             'product',
             (this.state.collapsed)? 'product--collapsed' : '',
-            (currentlyAvailable)? 'product--available' : 'product--unavailable'
+            (currentAvailability >= 1)? 'product--available' : 'product--unavailable'
         ];
         let productClassName = productClasses.join(' ');
 
-        let availabilityClassName = (currentlyAvailable)? 'icon check circle' : 'icon ban';
+        let availabilityClassName = 'icon ban';
+        switch (currentAvailability) {
+            case 1:
+                availabilityClassName = 'icon check';
+                break;
+            case 2:
+                availabilityClassName = 'icon star';
+                break;
+            default:
+                break;
+        }
 
         return (
-            <div key={productId} className="item" onClick={this.toggle}>
+            <div className="item" onClick={this.toggle}>
                 <div className={productClassName}>
-                    <img src={productImage} className="product__image"></img>
+                    <img src={productImage} className="product__image" alt={productName}></img>
                     <div className="product__name">
                         <div className="product__name-inner">
                         <span className="product__availability">

@@ -13,7 +13,7 @@ class ProductList extends React.Component {
         }
         
         return _.sortBy(this.props.products, ['productName']).map(p => {
-            return <Product product={p}></Product>
+            return <Product product={p} key={p.productId}></Product>
         });
     }
 
