@@ -1,4 +1,5 @@
 const mongo = require('mongodb');
+const moment = require('moment-timezone');
 
 const Scraper = require('../scraper/scraper');
 const MongoClient = require('../service/mongo');
@@ -99,4 +100,6 @@ const addProductUpdate = async (productData, updateTimestamp, timezone) => {
             await addProductUpdate(productData, updateTimestamp, roaster.timezone);
         }
     }
+
+    process.exit();
 })();

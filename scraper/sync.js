@@ -85,4 +85,6 @@ const syncProductUpdates = async () => {
 
     await syncProducts();
     await syncProductUpdates();
+
+    process.exit();
 })();
