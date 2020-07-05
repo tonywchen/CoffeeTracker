@@ -9,5 +9,8 @@ const connect = () => {
 export default {
     fetchProducts: () => {
         return connect().get('/products');
+    },
+    fetchNewProducts: () => {
+        return connect().get('/products/new');
     }
 };

@@ -1,13 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProducts } from '../actions'; 
+import { fetchProducts, fetchNewProducts } from '../actions'; 
 
 import ProductList from './ProductList';
 
 class ProductView extends React.Component {
     componentDidMount() {
-        this.props.fetchProducts();
+        switch(this.props.type) {
+            case 'all':
+                this.props.fetchProducts();
+                break;
+            default:
+                this.props.fetchNewProducts();
+        }
     }
 
     renderView() {
@@ -25,7 +31,7 @@ class ProductView extends React.Component {
 
         let contents = Object.keys(groups).sort().map(key => {
             return (
-                <div className="content">
+                <div className="content" key={key}>
                     <div className="content__header">
                         {key}
                     </div>
@@ -47,11 +53,7 @@ class ProductView extends React.Component {
     }
 
     render() {
-        return (
-            <div className="view">
-                {this.renderView()}
-            </div>
-        )
+        return this.renderView();
     }
 }
 
@@ -62,5 +64,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-    fetchProducts
+    fetchProducts,
+    fetchNewProducts
 })(ProductView);

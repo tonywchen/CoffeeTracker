@@ -10,4 +10,15 @@ export const fetchProducts = () => {
             payload: response.data
         });
     }
-}
+};
+
+export const fetchNewProducts = () => {
+    return async (dispatch) => {
+        let response = await resource.fetchNewProducts();
+
+        dispatch({
+            type: FETCH_PRODUCTS,
+            payload: response.data
+        });
+    }
+};
