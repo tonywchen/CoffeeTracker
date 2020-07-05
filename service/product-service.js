@@ -17,7 +17,16 @@ let ProductService  = {
         let from = to - DEFAULT_RECENT_DURATION;
 
         // TODO: consider pagination?
-        let productUpdates = await ProductUpdate.findWithDetail(from, to);
+        let productUpdates = await ProductUpdate.findRecent(from, to);
+        return productUpdates;
+    },
+
+    findNewProducts: async (duration = DEFAULT_RECENT_DURATION) => {
+        let to = new Date().getTime();
+        let from = to - DEFAULT_RECENT_DURATION;
+
+        // TODO: consider pagination?
+        let productUpdates = await ProductUpdate.findNew(from, to);
         return productUpdates;
     }
 };

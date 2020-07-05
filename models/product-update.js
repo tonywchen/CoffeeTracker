@@ -72,7 +72,7 @@ class ProductUpdate extends BaseModel {
         return this.constructor.save(getObj());
     }
 
-    static async findWithDetail(from, to) {
+    static async findRecent(from, to) {
         let dates = getDatesBetween(from, to);
 
         let match = {
@@ -131,6 +131,94 @@ class ProductUpdate extends BaseModel {
         let rawResults = await this.aggregate(aggregate);
         let results = rawResults.map(({productId, updates, productName, roasterName, details}) => {
             let detail = (details)? details[0] : {};
+            let metrics = detail.metrics || {};
+
+            let updateMap = mapUpdatesAcorssDates(updates, dates);
+
+            return {
+                productId,
+                productName: productName,
+                productLink: detail.link,
+                productImage: detail.image,
+                roasterName: roasterName,
+                createDate: metrics.createDate,
+                isNew: Object.keys(updateMap).indexOf(metrics.createDate) > -1,
+                updates: updateMap
+            };
+        });
+
+        return results;
+    }
+
+    static async findNew(from, to) {
+        let dates = getDatesBetween(from, to);
+
+        let match = {
+            timestamp: {
+                '$gte': from,
+                '$lt': to
+            },
+            status: ProductUpdate.STATUS_AVAILABLE
+        };
+
+        let lookup = {
+            from: Product.collection,
+            localField: 'productId',
+            foreignField: '_id',
+            as: 'details'
+        };
+
+        let matchCreated = {
+            'details.metrics.created': {
+                '$gte': from,
+                '$lt': to
+            }
+        };
+
+        let groupByProductAndDate = {
+            _id: {
+                productId: '$productId',
+                dateString: '$dateString',
+            },
+            count: { '$sum': 1 },
+            dateString: { '$first': '$dateString' },
+            productId: { '$first': '$productId' },
+            productName: { '$first': '$productName' },
+            roasterName: { '$first': '$roasterName' },
+            details: { '$first': '$details' }
+        };
+
+        let groupByProduct = {
+            _id: {
+                productId: '$productId'
+            },
+            dateString: { '$first': '$dateString' },
+            productId: { '$first': '$productId' },
+            productName: { '$first': '$productName' },
+            roasterName: { '$first': '$roasterName' },
+            details: { '$first': '$details' },
+            updates: { '$push': {
+                dateString: '$_id.dateString',
+                count: '$count'
+            }}
+        };
+
+        let aggregate = [{
+            '$match': match
+        }, {
+            '$lookup': lookup
+        }, {
+            '$match': matchCreated
+        }, {
+            '$group': groupByProductAndDate
+        }, {
+            '$group': groupByProduct
+        }];
+
+        let rawResults = await this.aggregate(aggregate);
+        let results = rawResults.map(({productId, updates, productName, roasterName, details}) => {
+            let detail = (details)? details[0] : {};
+            let metrics = detail.metrics || {};
             
             let updateMap = mapUpdatesAcorssDates(updates, dates);
 
@@ -140,6 +228,8 @@ class ProductUpdate extends BaseModel {
                 productLink: detail.link,
                 productImage: detail.image,
                 roasterName: roasterName,
+                createDate: metrics.createDate,
+                isNew: Object.keys(updateMap).indexOf(metrics.createDate) > -1,
                 updates: updateMap
             };
         });
