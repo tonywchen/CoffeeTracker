@@ -1,7 +1,7 @@
 import React from 'react';
-import { Router, Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
-import Navbar from './Navbar';
+import Header from './Header';
 import ProductView from './ProductView';
 
 import '../styles.scss';
@@ -11,7 +11,7 @@ class App extends React.Component {
         return (
             <div className="ui container">
                 <BrowserRouter>
-                    <Navbar />
+                    <Header />
                     <main>
                         <Switch>
                             <Route path="/" key="new" exact render={props => (

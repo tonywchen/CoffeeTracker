@@ -37,42 +37,120 @@ body {
     margin-right: -1em; // to counter negative margin on `.ui.container` set by semantic-ui
 }
 
+header {
+    font-size: 16px;
+}
+
+.brand-logo {
+    color: #B99161;
+    font-size: 42px;
+    font-style: italic;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transform: scaleX(0.9);
+}
+
 .navbar {
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    height: 72px;
+    height: 60px;
     z-index: 10;
 
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+
     background-color: var(--secondary-color);
     color: var(--text-color);
-    display: flex;
-    font-size: 16px;
 }
-a.nav-item {
-    flex: 1;
+.navbar-item {
+    padding: 0.75em;
     color: var(--text-secondary-fade);
+}
+
+.navmenu {
+    width: 100%;
+    height: auto;
+    max-height: 0px;
+
+    background-color: var(--secondary-alt);
+    margin-top: 60px;
+    overflow: hidden;
+    transition: max-height 0.25s;
+}
+.navmenu--open {
+    max-height: 240px;
+}
+a.navmenu-item {
+    color: var(--text-secondary-fade);
+    display: block;
     padding: 0.5em;
     text-align: center;
 
     &.selected {
-        color: var(--highlight-color);
-        font-weight: bold;
+        color: var(--text-color);
+        font-weight: 600;
     }
 }
-.nav-icon.icon {
+.navmenu-item__icon.icon {
     margin: 0.25em;
 }
-.nav-label {
-    font-size: 12px;
-    margin: 0.25em;
+.navmenu-item__label {
+    padding: 0.5em;
 }
+.navmenu-toggle {
+    margin: 0 0.5em;
+
+    .icon {
+        transition: transform 0.25s;
+        transform: rotate(0deg);
+        transform-origin: 50% 40%;
+    }
+
+    &.navmenu-toggle--flipv {
+        .icon {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.about {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    left: 0;
+    right: 0;
+    margin-top: -200%;
+    transition: margin-top 0.25s;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+
+    background-color: var(--secondary-color);
+    font-size: 14px;
+    line-height: 1.6em;
+    overflow: hidden;
+    padding: 3em;
+
+    &.about--show {
+        margin-top: 0;
+    }
+}
+.about__nav {
+    position: absolute;
+    padding: 2em;
+    top: 0;
+    left: 0;
+
+    font-size: 1.5em;
+}
+
+
 
 main {
-    margin-top: 72px;
-
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     padding: 0 0 2em 0;
