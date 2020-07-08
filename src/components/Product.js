@@ -15,27 +15,54 @@ class Product extends React.Component {
 
     render() {
         let {productId, productImage, productName, updates, createDate} = this.props.product;
-        let currentAvailability = 0;
+        let latestStatus;
+        let latestContainerClass;
+        let latestIconClass;
 
         let statuses = Object.keys(updates).sort().map(dateString => {
             let isAvailable = updates[dateString];
 
-            let iconClass = 'icon ban';
-            let containerClass = 'status unavailable';
+            let currentStatus = {},
+                iconClass = '',
+                containerClass = '';
 
-            if (isAvailable) {
-                if (dateString === createDate) {
-                    iconClass = 'icon star';
-                    currentAvailability = 2;
-                    containerClass = 'status new';
-                } else {
-                    iconClass = 'icon check';
-                    currentAvailability = 1;
-                    containerClass = 'status available';
-                }
+            if (dateString < createDate) {
+                currentStatus.isNew = false;
+                currentStatus.available = Product.STATUS_NOT_APPLICABLE;
             } else {
-                currentAvailability = 0;
+                currentStatus.isNew = (dateString === createDate) && isAvailable;
+                currentStatus.available = (isAvailable)
+                    ? Product.STATUS_AVAILABLE
+                    : Product.STATUS_UNAVAILABLE
+                ;
             }
+
+            switch (currentStatus.available) {
+                case Product.STATUS_NOT_APPLICABLE:
+                    containerClass = 'status not-applicable';
+                    iconClass = 'icon circle outline'
+                    break;
+                case Product.STATUS_AVAILABLE:
+                    if (currentStatus.isNew) {
+                        containerClass = 'status new';
+                        iconClass = 'icon fire';
+                    } else {
+                        containerClass = 'status available';
+                        iconClass = 'icon check';                        
+                    }
+                    break;
+                case Product.STATUS_UNAVAILABLE:
+                    containerClass = 'status unavailable';
+                    iconClass = 'icon ban';
+                    break;
+                default:
+                    break;
+            }
+
+            latestStatus = currentStatus;
+            latestContainerClass = containerClass;
+            latestIconClass = iconClass;
+
             let date = moment(dateString, 'YYYY/MM/DD').format('MM/DD');
 
             return (
@@ -48,24 +75,21 @@ class Product extends React.Component {
             );
         });
         
-        let productClasses = [
-            'product',
-            (this.state.collapsed)? 'product--collapsed' : '',
-            (currentAvailability >= 1)? 'product--available' : 'product--unavailable'
-        ];
-        let productClassName = productClasses.join(' ');
-
-        let availabilityClassName = 'icon ban';
-        switch (currentAvailability) {
-            case 1:
-                availabilityClassName = 'icon check';
+        let collapsedClass = (this.state.collapsed)? 'product--collapsed' : '';
+        let availabilityClass = '';
+        switch (latestStatus.available) {
+            case Product.STATUS_AVAILABLE:
+                availabilityClass = 'product--available';
                 break;
-            case 2:
-                availabilityClassName = 'icon star';
+            case Product.STATUS_UNAVAILABLE:
+                availabilityClass = 'product--unavailable';
                 break;
             default:
-                break;
+                // do nothing
         }
+
+        let productClasses = ['product', collapsedClass, availabilityClass];
+        let productClassName = productClasses.join(' ');
 
         return (
             <div className="item" onClick={this.toggle}>
@@ -74,7 +98,7 @@ class Product extends React.Component {
                     <div className="product__name">
                         <div className="product__name-inner">
                         <span className="product__availability">
-                                <i className={availabilityClassName}></i>
+                                <i className={latestIconClass}></i>
                             </span>
                             {productName}
                         </div>
@@ -87,5 +111,9 @@ class Product extends React.Component {
         );
     }
 }
+
+Product.STATUS_AVAILABLE = 1;
+Product.STATUS_NOT_APPLICABLE = 0;
+Product.STATUS_UNAVAILABLE = -1;
 
 export default Product;

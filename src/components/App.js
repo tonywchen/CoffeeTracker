@@ -9,10 +9,10 @@ import '../styles.scss';
 class App extends React.Component {
     render() {
         return (
-            <div>
+            <div class="ui container">
                 <BrowserRouter>
-                    <div>
-                        <Navbar />
+                    <Navbar />
+                    <main>
                         <Switch>
                             <Route path="/" key="new" exact render={props => (
                                 <ProductView {...props} type="new"/>
@@ -21,7 +21,7 @@ class App extends React.Component {
                                 <ProductView {...props} type="all"/>
                             )} />
                         </Switch>
-                    </div>
+                    </main>
                 </BrowserRouter>
             </div>
         );

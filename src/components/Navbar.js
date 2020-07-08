@@ -1,15 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <div className="ui secondary pointing menu">
-            <Link to="/" className="item">
-                New Products
-            </Link>
-            <Link to="/all" className="item">
-                All Products
-            </Link>
+        <div class="navbar">
+            <NavLink to="/" className="nav-item" exact activeClassName="selected">
+                <div><i class="nav-icon icon fire"></i></div>
+                <div className="nav-label">New Coffee</div>
+            </NavLink>
+            <NavLink to="/all" className="nav-item" exact activeClassName="selected">
+                <div><i class="nav-icon icon list"></i></div>
+                <div className="nav-label">All Coffee</div>
+            </NavLink>
         </div>
     );
 };

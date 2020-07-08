@@ -44,9 +44,6 @@ class ProductView extends React.Component {
 
         return (
             <div className="view">
-                <h3 className="view__header">
-                    Recent Products
-                </h3>
                 { contents }
             </div>
         );
