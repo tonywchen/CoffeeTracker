@@ -1,5 +1,6 @@
 import React from 'react';
 
+import _ from 'lodash';
 import moment from 'moment';
 
 class Product extends React.Component {
@@ -19,7 +20,9 @@ class Product extends React.Component {
         let latestContainerClass;
         let latestIconClass;
 
-        let statuses = Object.keys(updates).sort().map(dateString => {
+        let datesToDisplay = _.takeRight(Object.keys(updates).sort(), 5);
+
+        let statuses = datesToDisplay.map(dateString => {
             let isAvailable = updates[dateString];
 
             let currentStatus = {},
@@ -68,8 +71,8 @@ class Product extends React.Component {
             return (
                 <div className={containerClass} key={`${productId}-${date}`}>
                     <div className="status__inner">
-                        <div>{date}</div>
                         <i className={iconClass} />
+                        <div>{date}</div>
                     </div>
                 </div>
             );
@@ -95,16 +98,18 @@ class Product extends React.Component {
             <div className="item" onClick={this.toggle}>
                 <div className={productClassName}>
                     <img src={productImage} className="product__image" alt={productName}></img>
-                    <div className="product__name">
-                        <div className="product__name-inner">
-                        <span className="product__availability">
-                                <i className={latestIconClass}></i>
-                            </span>
-                            {productName}
+                    <div className="product__content">
+                        <div className="product__name">
+                            <div className="product__name-inner">
+                                <span className="product__availability">
+                                    <i className={latestIconClass}></i>
+                                </span>
+                                {productName}
+                            </div>
                         </div>
-                    </div>
-                    <div className="statuses">
-                        {statuses}
+                        <div className="statuses">
+                            {statuses}
+                        </div>
                     </div>
                 </div>
             </div>

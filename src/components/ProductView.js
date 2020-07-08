@@ -33,6 +33,7 @@ class ProductView extends React.Component {
             return (
                 <div className="content" key={key}>
                     <div className="content__header">
+                        <div class="descriptor">From</div>
                         {key}
                     </div>
                     <div className="content__main ui divided list">

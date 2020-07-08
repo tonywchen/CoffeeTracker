@@ -9,7 +9,7 @@ import '../styles.scss';
 class App extends React.Component {
     render() {
         return (
-            <div class="ui container">
+            <div className="ui container">
                 <BrowserRouter>
                     <Navbar />
                     <main>
