@@ -47,7 +47,7 @@ class Header extends React.Component {
         
         return (
             <header>
-                <div className="navbar">
+                <div className="navbar mobile only">
                     <div className="navbar-item" onClick={this.showAbout}>
                         <i className="icon info circle"></i>
                     </div>
@@ -61,6 +61,9 @@ class Header extends React.Component {
                     </div>
                 </div>
                 <div className={navmenuClassName}>
+                    <div className="brand-logo mobile hidden">
+                        COOLBEANS!
+                    </div>
                     <NavLink to="/" className="navmenu-item" exact activeClassName="selected" onClick={() => { this.selectMenuItem('New Coffee')}}>
                         <div className="navmenu-item__label">New Coffee</div>
                     </NavLink>
@@ -69,11 +72,11 @@ class Header extends React.Component {
                     </NavLink>                    
                 </div>
                 <div className={aboutClassName}>
-                    <div className="about__nav">
+                    <div className="about__nav mobile only">
                         <i className="icon chevron up" onClick={this.hideAbout}/>
                     </div>
                     <div className="about__content">
-                        <div className="brand-logo">
+                        <div className="brand-logo mobile only">
                             COOLBEANS!
                         </div>
                         <p>

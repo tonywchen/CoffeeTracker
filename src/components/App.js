@@ -9,7 +9,7 @@ import '../styles.scss';
 class App extends React.Component {
     render() {
         return (
-            <div className="ui container">
+            <div className="app" data-theme="dark">
                 <BrowserRouter>
                     <Header />
                     <main>
