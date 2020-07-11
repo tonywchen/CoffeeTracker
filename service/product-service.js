@@ -14,26 +14,26 @@ let ProductService  = {
      * Find products that are recently available
      */
     findRecentProducts: async (dateString, days = DEFAULT_RECENT_DAYS) => {
-        let toDate = moment(dateString).endOf('day');
-        let fromDate = moment(toDate).subtract(days - 1, 'day').startOf('day');
+        let momentTo = moment(dateString).endOf('day');
+        let momentFrom = moment(momentTo).subtract(days - 1, 'day').startOf('day');
 
-        let to = toDate.valueOf();
-        let from = fromDate.valueOf();
+        let fromDate = momentFrom.format('YYYY/MM/DD');
+        let toDate = momentTo.format('YYYY/MM/DD');
 
         // TODO: consider pagination?
-        let productUpdates = await ProductUpdate.findRecent(from, to);
+        let productUpdates = await ProductUpdate.findRecent(fromDate, toDate);
         return productUpdates;
     },
 
     findNewProducts: async (dateString, days = DEFAULT_RECENT_DAYS) => {
-        let toDate = moment(dateString).endOf('day');
-        let fromDate = moment(toDate).subtract(days - 1, 'day').startOf('day');
+        let momentTo = moment(dateString).endOf('day');
+        let momentFrom = moment(momentTo).subtract(days - 1, 'day').startOf('day');
 
-        let to = toDate.valueOf();
-        let from = fromDate.valueOf();
+        let fromDate = momentFrom.format('YYYY/MM/DD');
+        let toDate = momentTo.format('YYYY/MM/DD');
 
         // TODO: consider pagination?
-        let productUpdates = await ProductUpdate.findNew(from, to);
+        let productUpdates = await ProductUpdate.findNew(fromDate, toDate);
         return productUpdates;
     }
 };

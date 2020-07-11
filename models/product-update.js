@@ -9,15 +9,15 @@ const Product = require('./product');
 
 const moment = require('moment');
 
-const getDatesBetween = (from, to) => {
-    let fromDate = moment(from).startOf('day');
-    let toDate = moment(to).startOf('day');
+const getDatesBetween = (fromDate, toDate) => {
+    let momentFrom = moment(fromDate, 'YYYY/MM/DD').startOf('day');
+    let momentTo = moment(toDate, 'YYYY/MM/DD').startOf('day');
 
-    let currentDate = fromDate;
+    let momentCurrent = momentFrom;
     let dates = [];
-    while (!fromDate.isAfter(toDate)) {
-        dates.push(currentDate.format('YYYY/MM/DD'));
-        currentDate = currentDate.add(1, 'day');
+    while (!momentCurrent.isAfter(momentTo)) {
+        dates.push(momentCurrent.format('YYYY/MM/DD'));
+        momentCurrent = momentCurrent.add(1, 'day');
     }
 
     return dates;
@@ -72,13 +72,13 @@ class ProductUpdate extends BaseModel {
         return this.constructor.save(getObj());
     }
 
-    static async findRecent(from, to) {
-        let dates = getDatesBetween(from, to);
+    static async findRecent(fromDate, toDate) {
+        let dates = getDatesBetween(fromDate, toDate);
 
         let match = {
-            timestamp: {
-                '$gte': from,
-                '$lt': to
+            dateString: {
+                '$gte': fromDate,
+                '$lte': toDate
             },
             status: ProductUpdate.STATUS_AVAILABLE
         };
@@ -150,13 +150,13 @@ class ProductUpdate extends BaseModel {
         return results;
     }
 
-    static async findNew(from, to) {
-        let dates = getDatesBetween(from, to);
+    static async findNew(fromDate, toDate) {
+        let dates = getDatesBetween(fromDate, toDate);
 
         let match = {
-            timestamp: {
-                '$gte': from,
-                '$lt': to
+            dateString: {
+                '$gte': fromDate,
+                '$lte': toDate
             },
             status: ProductUpdate.STATUS_AVAILABLE
         };
@@ -169,9 +169,9 @@ class ProductUpdate extends BaseModel {
         };
 
         let matchCreated = {
-            'details.metrics.created': {
-                '$gte': from,
-                '$lt': to
+            'details.metrics.createDate': {
+                '$gte': fromDate,
+                '$lte': toDate
             }
         };
 

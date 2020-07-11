@@ -7,13 +7,13 @@ router.get('/', (req, res) => {
 });
 
 router.get('/products', async (req, res) => {
-    let dateString = req.params.dateString;
+    let dateString = req.query.dateString;
     let products = await ProductService.findRecentProducts(dateString);
     res.send(products);
 });
 
 router.get('/products/new', async (req, res) => {
-    let dateString = req.params.dateString;
+    let dateString = req.query.dateString;
     let products = await ProductService.findNewProducts(dateString);
     res.send(products);
 });
