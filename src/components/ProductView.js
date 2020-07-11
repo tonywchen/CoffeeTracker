@@ -31,22 +31,20 @@ class ProductView extends React.Component {
 
         let contents = Object.keys(groups).sort().map(key => {
             return (
-                <div className="content" key={key}>
-                    <div className="content__header">
-                        <div className="descriptor">From</div>
-                        {key}
-                    </div>
-                    <div className="content__main ui divided list">
-                        <ProductList products={groups[key]} />
-                    </div>
-                </div>
+                <ProductList title={key} products={groups[key]} />
             );
         });
 
         return (
-            <div className="view">
-                { contents }
-            </div>
+            <React.Fragment>
+                <div className="view-header mobile hidden">
+                    <div className="view-title">{this.props.title}</div>
+                    <div className="view-description">{this.props.description}</div>
+                </div>
+                <div className="view">
+                    { contents }
+                </div>
+            </React.Fragment>
         );
     }
 
