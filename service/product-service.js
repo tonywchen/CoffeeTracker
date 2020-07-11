@@ -1,7 +1,8 @@
-const Product = require('../models/product');
+const moment = require('moment');
+
 const ProductUpdate = require('../models/product-update');
 
-const DEFAULT_RECENT_DURATION = 60 * 60 * 24 * 1000 * 6; // 7 days
+const DEFAULT_RECENT_DAYS = 5; // 5 days
 
 let ProductService  = {
     findAllProducts: async () => {
@@ -12,18 +13,24 @@ let ProductService  = {
     /**
      * Find products that are recently available
      */
-    findRecentProducts: async (duration = DEFAULT_RECENT_DURATION) => {
-        let to = new Date().getTime();
-        let from = to - DEFAULT_RECENT_DURATION;
+    findRecentProducts: async (dateString, days = DEFAULT_RECENT_DAYS) => {
+        let toDate = moment(dateString).endOf('day');
+        let fromDate = moment(toDate).subtract(days - 1, 'day').startOf('day');
+
+        let to = toDate.valueOf();
+        let from = fromDate.valueOf();
 
         // TODO: consider pagination?
         let productUpdates = await ProductUpdate.findRecent(from, to);
         return productUpdates;
     },
 
-    findNewProducts: async (duration = DEFAULT_RECENT_DURATION) => {
-        let to = new Date().getTime();
-        let from = to - DEFAULT_RECENT_DURATION;
+    findNewProducts: async (dateString, days = DEFAULT_RECENT_DAYS) => {
+        let toDate = moment(dateString).endOf('day');
+        let fromDate = moment(toDate).subtract(days - 1, 'day').startOf('day');
+
+        let to = toDate.valueOf();
+        let from = fromDate.valueOf();
 
         // TODO: consider pagination?
         let productUpdates = await ProductUpdate.findNew(from, to);

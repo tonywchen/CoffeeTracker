@@ -8,9 +8,13 @@ const connect = () => {
 
 export default {
     fetchProducts: () => {
-        return connect().get('/products');
+        return connect().get('/products', {
+            dateString: moment().format('YYYY-MM-DD')
+        });
     },
     fetchNewProducts: () => {
-        return connect().get('/products/new');
+        return connect().get('/products/new', {
+            dateString: moment().format('YYYY-MM-DD')
+        });
     }
 };
