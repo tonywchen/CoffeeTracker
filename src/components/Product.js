@@ -3,6 +3,8 @@ import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 
+import LazyImage from './LazyImage';
+
 class Product extends React.Component {
     state = {
         collapsed: false
@@ -71,7 +73,7 @@ class Product extends React.Component {
         return (
             <div className="list-item" onClick={this.toggle}>
                 <div className={productClassName}>
-                    <img src={productImage} className="product__image" alt={productName}></img>
+                    <LazyImage src={productImage} className="product__image" alt={productName}></LazyImage>
                     <div className="product__content">
                         <div className="product__name">
                             <div className="product__name-inner">
