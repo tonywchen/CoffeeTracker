@@ -2,7 +2,7 @@ import React from 'react';
 
 const options = {
     rootMargin: '0px',
-    threshold: 1.0
+    threshold: 0
 };
 
 class LazyImage extends React.Component {
@@ -38,6 +38,9 @@ class LazyImage extends React.Component {
         }
     }
 
+    onload = () => {
+        this.image.current.className = 'lazy-image';
+    }
 
     render() {
         let src = (this.state.loaded)
@@ -45,12 +48,16 @@ class LazyImage extends React.Component {
             : null;
 
         return (
-            <img
-                ref={this.image}
-                className={this.props.className}
-                alt={this.props.alt}
-                src={src}
-            />
+            <div className={this.props.className}>
+                <img
+                    ref={this.image}
+                    alt={this.props.alt}
+                    src={src}
+                    className="lazy-image--loading"
+                    onLoad={this.onload}
+                />
+            </div>
+
         );
     }
 }
