@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
+import DarkModeToggle from './DarkModeToggle';
 
 const LINKS = [{
     to: '/',
@@ -107,6 +108,7 @@ class Header extends React.Component {
                         <p>
                             COOLBEANS! is a coffee stock tracker from tracks coffee stocks from various Canadian independent coffee roasters through their websites. Discover new coffee offerings or check out all the best coffee Canadian roasters have to offer.
                         </p>
+                        <DarkModeToggle />
                     </div>
                 </div>
             </header>

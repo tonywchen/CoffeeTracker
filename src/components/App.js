@@ -31,7 +31,7 @@ class App extends React.Component {
         });
 
         return (
-            <div className="app" data-theme="dark">
+            <div className="app">
                 <BrowserRouter>
                     <Header />
                     <main>
