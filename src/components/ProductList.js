@@ -33,7 +33,10 @@ class ProductList extends React.Component {
     }
 
     toggle = (isManual = true) => {   
-        let newCollapsed = !this.state.collapsed;     
+        this._recalculateLayout(!this.state.collapsed, isManual);
+    }
+
+    _recalculateLayout(newCollapsed, isManual) {
         let newMainContentHeight = (newCollapsed)
             ? '0px'
             : this.mainContent.current.scrollHeight + 'px';
@@ -118,7 +121,7 @@ class ProductList extends React.Component {
                     className="content__main"
                     ref={this.mainContent}
                     style={mainContentStyle}>
-                    <div class="list">
+                    <div className="list">
                         {this.renderList()}
                     </div>
                 </div>
