@@ -43,14 +43,51 @@ class ProductList extends React.Component {
             mainContentHeight: newMainContentHeight,
             isAnimatable: isManual
         });
-    };
+    }
+
+    _generateProductData(product) {
+        let statuses = this._computeStatuses(product.updates, product.createDate);
+        let statusNums = Object.keys(statuses).sort().map((key) => {
+            return 2 - statuses[key];
+        });
+        let statusSort = statusNums.reverse().join('');
+        
+        product.statuses = statuses;
+        product._statusSort = statusSort; 
+    }
+
+    _computeStatuses(updates, createDate) {
+        let dateStrings = Object.keys(updates).sort();
+        let statuses = {};
+        
+        for (let dateString of dateStrings) {
+            let isAvailable = updates[dateString];
+            let status = Product.STATUS_NOT_APPLICABLE;
+
+            if (dateString === createDate && isAvailable) {
+                status = Product.STATUS_NEW;
+            } else if (dateString > createDate) {
+                status = (isAvailable)
+                    ? Product.STATUS_AVAILABLE
+                    : Product.STATUS_UNAVAILABLE;
+            }
+
+            statuses[dateString] = status;
+        }
+
+        return statuses;
+    }
 
     renderList() {
         if (!this.props.products) {
             return 'Empty List';
         }
+
+        for (let product of this.props.products) {
+            this._generateProductData(product);
+        }
         
-        return _.sortBy(this.props.products, ['productName']).map(p => {
+        return _.sortBy(this.props.products, ['_statusSort', 'productName']).map(p => {
             return <Product product={p} key={p.productId}></Product>
         });
     }
