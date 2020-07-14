@@ -14,7 +14,7 @@ let VIEWS = [{
 }, {
     type: 'all',
     path: '/all',
-    title: 'Current Coffee',
+    title: 'All Coffee',
     description: 'Here are all current offerings from the roasters!'
 }];
 
@@ -24,7 +24,7 @@ class App extends React.Component {
     render() {
         let routes = VIEWS.map((v) => {
             return (
-                <Route path={v.path} key={v.type} exact render={props => (
+                <Route path={v.path} key={v.type} title={v.title} exact render={props => (
                     <ProductView {...props} title={v.title} description={v.description} type={v.type} />
                 )} />
             )

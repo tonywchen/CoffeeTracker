@@ -72,6 +72,12 @@ body {
 }
 
 header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+
     font-size: 16px;
 }
 
@@ -86,7 +92,7 @@ header {
 }
 
 .navbar {
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     top: 0;
@@ -194,7 +200,7 @@ main {
     min-height: -webkit-fill-available;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0 0 2em 0;
+    padding: 60px 0 2em 0;
 }
 
 .view {
@@ -415,6 +421,7 @@ main {
         top: 0;
         bottom: 0;
         left: 0;
+        right: auto;
         width: 300px;
 
         background-color: var(--secondary-color);
@@ -447,7 +454,7 @@ main {
     }
 
     main {
-        padding-left: 300px;
+        padding: 0 0 2em 300px;
         max-width: 900px;
     }
 

@@ -11,11 +11,9 @@ class ProductView extends React.Component {
         isLoading: true
     };
 
-    componentWillMount() {
-        this.props.products.length = 0;
-    }
-
     componentDidMount() {
+        this.props.products.length = 0;
+
         switch(this.props.type) {
             case 'all':
                 this.props.fetchProducts().then(() => {
@@ -39,11 +37,11 @@ class ProductView extends React.Component {
 
         if (this.state.isLoading) {
             contents = (
-                <div class="view-loader">
-                    <div class="loader-icon">
+                <div className="view-loader">
+                    <div className="loader-icon">
                         <CoffeeCup></CoffeeCup>
                     </div>
-                    <div>Caffenating the tracker...</div>
+                    <div>Caffenating the list...</div>
                 </div>
             );
             viewClassName = 'view view--stretch view--center';
