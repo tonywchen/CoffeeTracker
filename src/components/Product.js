@@ -16,26 +16,6 @@ class Product extends React.Component {
         });
     };
 
-    _computeStatuses = (updates, dateStrings, createDate) => {
-        let statuses = {};
-        for (let dateString of dateStrings) {
-            let isAvailable = updates[dateString];
-            let status = Product.STATUS_NOT_APPLICABLE;
-
-            if (dateString === createDate && isAvailable) {
-                status = Product.STATUS_NEW;
-            } else if (dateString > createDate) {
-                status = (isAvailable)
-                    ? Product.STATUS_AVAILABLE
-                    : Product.STATUS_UNAVAILABLE;
-            }
-
-            statuses[dateString] = status;
-        }
-
-        return statuses;
-    }
-
     renderStatuses = (statuses, productId) => {
         return Object.keys(statuses).sort().map((dateString) => {
             let status = statuses[dateString];
@@ -55,11 +35,9 @@ class Product extends React.Component {
     }
 
     render() {
-        let {productId, productImage, productName, updates, createDate} = this.props.product;
+        let {productId, productImage, productName, statuses} = this.props.product;
 
-        let dateStrings = Object.keys(updates).sort();
-        let statuses = this._computeStatuses(updates, dateStrings, createDate);
-
+        let dateStrings = Object.keys(statuses).sort();
         let latestDateString = _.last(dateStrings);
         let latestStatus = statuses[latestDateString];
         let latestClasses = STATUS_TO_CLASSES[latestStatus];
