@@ -65,7 +65,7 @@
 }
 
 body {
-    background-color: var(--bg-color);
+    background-color: var(--primary-color);
     color: var(--text-color);
     font-family: 'Avenir Next', 'Nunito', sans-serif;
     font-size: 10px;
@@ -186,11 +186,26 @@ a.navmenu-item {
 
 
 main {
+    display: flex;
+    flex-direction: column;
+
     background-color: var(--primary-color);
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     padding: 0 0 2em 0;
+}
+
+.view {
+    &.view--stretch {
+        flex: 1;
+        display: flex;
+    }
+    &.view--center {
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 .view-header {
@@ -203,6 +218,15 @@ main {
 .view-description {
     color: var(--text-primary-fade);
     font-size: 0.8em;
+}
+.view-loader {
+    font-size: 1.2em;
+    margin: 3em auto;
+    text-align: center;
+}
+.loader-icon {
+    margin: 1em auto;
+    width: 80px;
 }
 
 
@@ -288,6 +312,7 @@ main {
     height: 80px;
     object-fit: cover;
 
+    background-color: var(--primary-alt);
     border: 1px solid var(--image-border-color);
     border-radius: 2px;
 }
@@ -369,6 +394,7 @@ main {
 
 @media only screen and (min-width: 768px) {
     body {
+        background-color: var(--bg-color);
         font-size: 12px;
     }
 

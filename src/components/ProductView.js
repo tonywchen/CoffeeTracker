@@ -4,36 +4,69 @@ import { connect } from 'react-redux';
 import { fetchProducts, fetchNewProducts } from '../actions'; 
 
 import ProductList from './ProductList';
+import CoffeeCup from './CoffeeCup';
 
 class ProductView extends React.Component {
+    state = {
+        isLoading: true
+    };
+
+    componentWillMount() {
+        this.props.products.length = 0;
+    }
+
     componentDidMount() {
         switch(this.props.type) {
             case 'all':
-                this.props.fetchProducts();
+                this.props.fetchProducts().then(() => {
+                    this.setState({
+                        isLoading: false
+                    });
+                });
                 break;
             default:
-                this.props.fetchNewProducts();
+                this.props.fetchNewProducts().then(() => {
+                    this.setState({
+                        isLoading: false
+                    });
+                });
         }
     }
 
     renderView() {
-        let groups = {};
-        for (let product of this.props.products) {
-            let roasterName = product.roasterName;
-            let group = groups[roasterName];
-            if (!group) {
-                group = [];
-                groups[roasterName] = group;
-            }
+        let contents;
+        let viewClassName = 'view';
 
-            group.push(product);
-        }
-
-        let contents = Object.keys(groups).sort().map(key => {
-            return (
-                <ProductList title={key} products={groups[key]} />
+        if (this.state.isLoading) {
+            contents = (
+                <div class="view-loader">
+                    <div class="loader-icon">
+                        <CoffeeCup></CoffeeCup>
+                    </div>
+                    <div>Caffenating the tracker...</div>
+                </div>
             );
-        });
+            viewClassName = 'view view--stretch view--center';
+        } else {
+            let groups = {};
+            for (let product of this.props.products) {
+                let roasterName = product.roasterName;
+                let group = groups[roasterName];
+                if (!group) {
+                    group = [];
+                    groups[roasterName] = group;
+                }
+    
+                group.push(product);
+            }
+    
+            contents = Object.keys(groups).sort().map(key => {
+                let contentKey = `${this.props.type}_${key}`;
+                return (
+                    <ProductList key={contentKey} title={key} products={groups[key]} />
+                );
+            });
+        }
 
         return (
             <React.Fragment>
@@ -41,7 +74,7 @@ class ProductView extends React.Component {
                     <div className="view-title">{this.props.title}</div>
                     <div className="view-description">{this.props.description}</div>
                 </div>
-                <div className="view">
+                <div className={viewClassName}>
                     { contents }
                 </div>
             </React.Fragment>
