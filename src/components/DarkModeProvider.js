@@ -1,13 +1,24 @@
 import React from 'react';
 import DarkModeContext from './DarkModeContext';
 
+const setAndListenForSystemPreference = (callback) => {
+    if (window.matchMedia) {
+        let schemaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        callback(schemaQuery.matches);
+        schemaQuery.addListener(e => {
+            callback(e.matches);
+        });
+    }
+};
+
 class DarkModeProvider extends React.Component {
     state = {
-        value: true, // not dark mode
+        value: false
     }
 
     componentDidMount() {
-        this.refresh();
+        setAndListenForSystemPreference(this.update)
     }
 
     toggle = () => {
@@ -28,11 +39,11 @@ class DarkModeProvider extends React.Component {
         document.body.dataset.theme = 'light';
     }
     
-    refresh = () => {
-        if (this.state.value) {
-            document.body.dataset.theme = 'dark';
+    update = (newValue) => {
+        if (newValue) {
+            this.enable();
         } else {
-            document.body.dataset.theme = 'light';
+            this.disable();
         }
     }
 
@@ -42,8 +53,7 @@ class DarkModeProvider extends React.Component {
                 value: this.state.value,
                 toggle: this.toggle,
                 enable: this.enable,
-                disable: this.disable,
-                refresh: this.refresh
+                disable: this.disable
             }}>
                 {this.props.children}
             </DarkModeContext.Provider>
