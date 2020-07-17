@@ -109,8 +109,8 @@ class ProductList extends React.Component {
         }
 
         return (
-            <div className="content" key={this.props.title} onClick={this.toggle}>
-                <div className="content__header">
+            <div className="content" key={this.props.title}>
+                <div className="content__header" onClick={this.toggle}>
                     <div className={toggleClassName}>
                         <i className="ui icon chevron down" />
                     </div>

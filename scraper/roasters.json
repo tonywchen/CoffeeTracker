@@ -144,8 +144,8 @@
         "active": true,
         "timezone": "America/Toronto",
         "pages": [
-            "https://www.hellodemello.com/product-category/og-de-mello/",
-            "https://www.hellodemello.com/product-category/single-origin/"
+            "https://www.hellodemello.com/product-category/coffee/og-de-mello/",
+            "https://www.hellodemello.com/product-category/coffee/single-origin/"
         ],
         "rules": {
             "base": ".site-main ul.products > li",
