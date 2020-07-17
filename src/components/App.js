@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
+import DarkModeProvider from './DarkModeProvider';
 import Header from './Header';
 import ProductView from './ProductView';
 
@@ -33,7 +34,9 @@ class App extends React.Component {
         return (
             <div className="app">
                 <BrowserRouter>
-                    <Header />
+                    <DarkModeProvider>
+                        <Header />
+                    </DarkModeProvider>
                     <main>
                         <Switch>
                             {routes}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
-import DarkModeToggle from './DarkModeToggle';
+
+import DarkModeContext from './DarkModeContext';
 
 const LINKS = [{
     to: '/',
@@ -52,6 +53,30 @@ class Header extends React.Component {
         return {};
     }
 
+    renderDarkModeToggle = () => {
+        return (
+            <DarkModeContext.Consumer>
+                {({value, enable, disable}) => {
+                    let lightClassName = 'toggle-button',
+                        darkClassName = 'toggle-button';
+
+                    if (value) {
+                        darkClassName += ' active';
+                    } else {
+                        lightClassName += ' active';
+                    }
+
+                    return (
+                        <div className="toggle">
+                            <div className={lightClassName} onClick={disable}>Light Mode</div>
+                            <div className={darkClassName} onClick={enable}>Dark Mode</div>
+                        </div>
+                    );
+                }}
+            </DarkModeContext.Consumer>
+        );
+    }
+
     render() {
         let navmenuToggleClassName = 'navmenu-toggle'
         let navmenuClassName = 'navmenu';
@@ -75,7 +100,7 @@ class Header extends React.Component {
 
         let currentLink = this.getCurrentLink();
         let currentLinkName = currentLink.name || '';
-        
+
         return (
             <header>
                 <div className="navbar mobile only">
@@ -108,7 +133,7 @@ class Header extends React.Component {
                         <p>
                             COOLBEANS! is a coffee stock tracker from tracks coffee stocks from various Canadian independent coffee roasters through their websites. Discover new coffee offerings or check out all the best coffee Canadian roasters have to offer.
                         </p>
-                        <DarkModeToggle />
+                        {this.renderDarkModeToggle()}
                     </div>
                 </div>
             </header>

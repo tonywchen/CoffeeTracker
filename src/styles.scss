@@ -10,6 +10,7 @@
     --secondary-alt: #EAE1C9;
     --tertiary-color: #D8E8C9;
     --highlight-color: #F5A623;
+    --highlight-fade: rgba(245, 166, 35, 0.5);
     --error-color: #B44314;
     --image-border-color: rgba(136, 141, 132, 0.15);
 }
@@ -26,6 +27,7 @@
     --secondary-alt: #1D1207;
     --tertiary-color: #35412F;
     --highlight-color: #F5A623;
+    --highlight-fade: rgba(245, 166, 35, 0.5);
     --error-color: #ff6d26;
     --image-border-color: transparent;
 }
@@ -89,7 +91,7 @@ header {
     background-color: var(--secondary-alt);
     margin-top: 60px;
     overflow: hidden;
-    transition: max-height 0.25s;
+    transition: max-height 0.25s, background-color 0.25s;
 }
 .navmenu--open {
     max-height: 240px;
@@ -157,6 +159,32 @@ a.navmenu-item {
     left: 0;
 
     font-size: 1.5em;
+}
+
+.toggle {
+    border: 1px solid var(--text-secondary-fade);
+    border-radius: 6px;
+    display: flex;
+    overflow: hidden;
+}
+.toggle-button {
+    border-right: 1px solid var(--text-secondary-fade);
+    color: var(--text-secondary-fade);
+    cursor: pointer;
+    flex: 1;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    text-align: center;
+
+    &.active {
+        background-color: var(--highlight-fade);
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+    &:last-child {
+        border-right: none;
+    }
 }
 
 
@@ -234,6 +262,7 @@ main {
     display: flex;
     align-items: center;
 
+    cursor: pointer;
     padding: 0 1.5em;
 
     .icon {
@@ -248,20 +277,6 @@ main {
 }
 .content__main {
     overflow: hidden;
-}
-
-/* .list {
-    transform: translateY(0);
-    transition: transform 0.25s;
-}
-.content.content--collapsed {
-    .list {
-        transform: translateY(-100%);
-        overflow: hidden;
-    }
-} */
-
-.list-item {
 }
 
 .product {
@@ -399,12 +414,14 @@ main {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
+
+        transition: background-color 0.25s;
     }
 
     .navmenu {
         background-color: var(--secondary-color);
         max-height: inherit;
-        margin-top: 100%;
+        margin-top: 90%;
         overflow: auto;
     }
     .about {
@@ -420,7 +437,7 @@ main {
         font-size: 14px;
         line-height: 1.6em;
         overflow: hidden;
-        padding: 3em;  
+        padding: 3em 2em;  
 
         transition: background-color 0.25s;
     }
