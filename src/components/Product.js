@@ -35,7 +35,7 @@ class Product extends React.Component {
     }
 
     render() {
-        let {productId, productImage, productName, statuses} = this.props.product;
+        let {productId, productImage, productName, statuses, createDate} = this.props.product;
 
         let dateStrings = Object.keys(statuses).sort();
         let latestDateString = _.last(dateStrings);
@@ -49,7 +49,7 @@ class Product extends React.Component {
         let productClassName = productClasses.join(' ');
 
         return (
-            <div className="list-item" onClick={this.toggle}>
+            <div className="list-item" data-createDate={createDate} data-productId={productId}>
                 <div className={productClassName}>
                     <LazyImage src={productImage} className="product__image" alt={productName}></LazyImage>
                     <div className="product__content">
@@ -75,6 +75,7 @@ Product.STATUS_NEW = 2;
 Product.STATUS_AVAILABLE = 1;
 Product.STATUS_NOT_APPLICABLE = 0;
 Product.STATUS_UNAVAILABLE = -1;
+Product.STATUS_UNKNOWN = -2;
 
 const STATUS_TO_CLASSES = {};
 STATUS_TO_CLASSES[Product.STATUS_NEW] = {
@@ -97,6 +98,10 @@ STATUS_TO_CLASSES[Product.STATUS_UNAVAILABLE] = {
     iconClass: 'icon ban',
     availabilityClass: 'product--unavailable'
 };
-
+STATUS_TO_CLASSES[Product.STATUS_UNKNOWN] = {
+    containerClass: 'status unknown',
+    iconClass: 'icon question',
+    availabilityClass: 'product--unknown'
+};
 
 export default Product;

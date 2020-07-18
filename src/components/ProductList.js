@@ -64,15 +64,21 @@ class ProductList extends React.Component {
         let statuses = {};
         
         for (let dateString of dateStrings) {
-            let isAvailable = updates[dateString];
-            let status = Product.STATUS_NOT_APPLICABLE;
+            let update = updates[dateString];
 
-            if (dateString === createDate && isAvailable) {
-                status = Product.STATUS_NEW;
-            } else if (dateString > createDate) {
-                status = (isAvailable)
-                    ? Product.STATUS_AVAILABLE
-                    : Product.STATUS_UNAVAILABLE;
+            let status = Product.STATUS_NOT_APPLICABLE;
+            if (update.totalAvailable > 0) {
+                if (dateString === createDate) {
+                    status = Product.STATUS_NEW;
+                } else {
+                    status = Product.STATUS_AVAILABLE;
+                }                
+            } else if (update.totalAvailable === 0) {
+                status = Product.STATUS_UNAVAILABLE;
+            } else {
+                if (dateString >= createDate) {
+                    status = Product.STATUS_UNKNOWN;
+                }
             }
 
             statuses[dateString] = status;
