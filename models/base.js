@@ -67,13 +67,26 @@ class BaseModel {
         return dbObj;
     }
 
-    static async update(query, update) {
+    static async update(query, update, multi=false) {
         this._validate();
 
         let db = MongoClient.get();
-        let result = await db.collection(this.collection).updateOne(query, update);
 
-        return result;
+        if (multi) {
+            return await db.collection(this.collection).updateMany(query, update);
+        } else {
+            return await db.collection(this.collection).updateOne(query, update);
+        }
+    }
+
+    static async findOrCreate(query, set) {
+        this._validate();
+
+        let db = MongoClient.get();
+
+        return await db.collection(this.collection).updateOne(query, {
+            '$setOnInsert': set
+        }, {upsert: true});
     }
 }
 

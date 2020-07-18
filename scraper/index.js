@@ -62,22 +62,44 @@ const findOrCreateProduct = async (productData, roaster, updateTimestamp) => {
     return product;
 };
 
-const addProductUpdate = async (productData, updateTimestamp, timezone) => {
-    let productId = productData.productId;
-    let isOutOfStock = productData.isOutOfStock;
+const upsertProductUpdate = async (updateTimestamp, product, roaster, availableProductMap) => {
+    let dateString = moment(updateTimestamp).tz(roaster.timezone).format('YYYY/MM/DD');
 
-    let status = (isOutOfStock)
-        ? ProductUpdate.STATUS_UNAVAILABLE
-        : ProductUpdate.STATUS_AVAILABLE;
+    await ProductUpdate.findOrCreate({
+        productId: product._id,
+        dateString: dateString
+    }, {
+        productId: product._id,
+        productName: product.name,
+        roasterId: roaster._id,
+        roasterName: roaster.name,
+        dateString: dateString,
+        statuses: [],
+        totalChecks: 0,
+        totalAvailable: 0
+    });
 
-    await ProductUpdate.save({
-        productId: productId,
-        productName: productData.name,
-        roasterId: productData.roasterId,
-        roasterName: productData.roasterName,
-        timestamp: updateTimestamp,
-        status: status,
-        dateString: moment(updateTimestamp).tz(timezone).format('YYYY/MM/DD')
+    let status = (availableProductMap[product._id])
+        ? ProductUpdate.STATUS_AVAILABLE
+        : ProductUpdate.STATUS_UNAVAILABLE;
+
+    await ProductUpdate.update({
+        productId: product._id,
+        dateString: dateString                
+    }, {
+        '$push': {
+            statuses: {
+                timestamp: updateTimestamp,
+                status: status
+            }
+        },
+        '$set': {
+            status: status
+        },
+        '$inc': {
+            totalChecks: 1,
+            totalAvailable: (availableProductMap[product._id])? 1 : 0
+        }
     });
 };
 
@@ -91,13 +113,16 @@ const addProductUpdate = async (productData, updateTimestamp, timezone) => {
         let roaster = await findOrCreateRoaster(roasterData);
         await addRoasterUpdate(roaster._id, updateTimestamp, roasterData.rules)
 
+        let availableProductMap = {};
         for (let productData of roasterData.products) {
             let product = await findOrCreateProduct(productData, roaster, updateTimestamp);
-            productData.productId = product._id;
-            productData.roasterId = roaster._id;
-            productData.roasterName = roaster.name;
 
-            await addProductUpdate(productData, updateTimestamp, roaster.timezone);
+            availableProductMap[product._id] = !productData.isOutOfStock;
+        }
+
+        let products = await Product.find({roasterId: new mongo.ObjectId(roaster._id)});
+        for (let product of products) {
+            upsertProductUpdate(updateTimestamp, product, roaster, availableProductMap);
         }
     }
 

@@ -31,7 +31,6 @@ const syncProducts = async() => {
 
     let productUpdates = await ProductUpdate.aggregate(aggregate);
     for (let productUpdate of productUpdates) {
-        console.log(productUpdate);
         let productId = productUpdate._id;
         let metrics = {
             created: productUpdate.firstTimestamp,
