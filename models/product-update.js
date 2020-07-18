@@ -23,21 +23,22 @@ const getDatesBetween = (fromDate, toDate) => {
     return dates;
 };
 
-const mapUpdatesAcorssDates = (updates, dates) => {
+const mapUpdatesAcrossDates = (updates, dateStrings) => {
     let updateMap = {};
-    for (let date of dates) {
-        updateMap[date] = 0;
+    for (let update of updates) {
+        updateMap[update.dateString] = update;
     }
 
-    for (let {dateString, count} of updates) {
-        if (updateMap[dateString] === undefined) {
-            continue;
+    let fullUpdateMap = {};
+    for (let dateString of dateStrings) {
+        fullUpdateMap[dateString] = updateMap[dateString] || {
+            dateString: dateString,
+            totalChecks: -1,
+            totalAvailable: -1
         }
-
-        updateMap[dateString] += count;
     }
 
-    return updateMap;
+    return fullUpdateMap;
 }
 
 class ProductUpdate extends BaseModel {
@@ -79,8 +80,7 @@ class ProductUpdate extends BaseModel {
             dateString: {
                 '$gte': fromDate,
                 '$lte': toDate
-            },
-            status: ProductUpdate.STATUS_AVAILABLE
+            }
         };
 
         let lookup = {
@@ -107,25 +107,32 @@ class ProductUpdate extends BaseModel {
             _id: {
                 productId: '$productId'
             },
-            dateString: { '$first': '$dateString' },
             productId: { '$first': '$productId' },
             productName: { '$first': '$productName' },
             roasterName: { '$first': '$roasterName' },
             details: { '$first': '$details' },
             updates: { '$push': {
-                dateString: '$_id.dateString',
-                count: '$count'
-            }}
+                dateString: '$dateString',
+                totalChecks: '$totalChecks',
+                totalAvailable: '$totalAvailable'
+            }},
+            allAvailables: {
+                '$sum': '$totalAvailable'
+            }
         };
+
+        let matchRecentlyAvailable = {
+            allAvailables: {'$gt': 0}
+        }
 
         let aggregate = [{
             '$match': match
         }, {
             '$lookup': lookup
         }, {
-            '$group': groupByProductAndDate
-        }, {
             '$group': groupByProduct
+        }, {
+            '$match': matchRecentlyAvailable
         }];
 
         let rawResults = await this.aggregate(aggregate);
@@ -133,7 +140,7 @@ class ProductUpdate extends BaseModel {
             let detail = (details)? details[0] : {};
             let metrics = detail.metrics || {};
 
-            let updateMap = mapUpdatesAcorssDates(updates, dates);
+            let updateMap = mapUpdatesAcrossDates(updates, dates);
 
             return {
                 productId,
@@ -157,8 +164,7 @@ class ProductUpdate extends BaseModel {
             dateString: {
                 '$gte': fromDate,
                 '$lte': toDate
-            },
-            status: ProductUpdate.STATUS_AVAILABLE
+            }
         };
 
         let lookup = {
@@ -192,16 +198,23 @@ class ProductUpdate extends BaseModel {
             _id: {
                 productId: '$productId'
             },
-            dateString: { '$first': '$dateString' },
             productId: { '$first': '$productId' },
             productName: { '$first': '$productName' },
             roasterName: { '$first': '$roasterName' },
             details: { '$first': '$details' },
             updates: { '$push': {
-                dateString: '$_id.dateString',
-                count: '$count'
-            }}
+                dateString: '$dateString',
+                totalChecks: '$totalChecks',
+                totalAvailable: '$totalAvailable'
+            }},
+            allAvailables: {
+                '$sum': '$totalAvailable'
+            }
         };
+
+        let matchRecentlyAvailable = {
+            allAvailables: {'$gt': 0}
+        }
 
         let aggregate = [{
             '$match': match
@@ -209,10 +222,10 @@ class ProductUpdate extends BaseModel {
             '$lookup': lookup
         }, {
             '$match': matchCreated
-        }, {
-            '$group': groupByProductAndDate
-        }, {
+        },{
             '$group': groupByProduct
+        }, {
+            '$match': matchRecentlyAvailable
         }];
 
         let rawResults = await this.aggregate(aggregate);
@@ -220,7 +233,7 @@ class ProductUpdate extends BaseModel {
             let detail = (details)? details[0] : {};
             let metrics = detail.metrics || {};
             
-            let updateMap = mapUpdatesAcorssDates(updates, dates);
+            let updateMap = mapUpdatesAcrossDates(updates, dates);
 
             return {
                 productId,
