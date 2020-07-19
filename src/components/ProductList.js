@@ -71,7 +71,9 @@ class ProductList extends React.Component {
                 if (dateString === createDate) {
                     status = Product.STATUS_NEW;
                 } else {
-                    status = Product.STATUS_AVAILABLE;
+                    status = (update.totalAvailable / update.totalChecks < 1)
+                        ? Product.STATUS_PARTIALLY_AVAILABLE
+                        : Product.STATUS_AVAILABLE;
                 }                
             } else if (update.totalAvailable === 0) {
                 status = Product.STATUS_UNAVAILABLE;

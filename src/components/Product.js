@@ -71,8 +71,9 @@ class Product extends React.Component {
     }
 }
 
-Product.STATUS_NEW = 2;
-Product.STATUS_AVAILABLE = 1;
+Product.STATUS_NEW = 3;
+Product.STATUS_AVAILABLE = 2;
+Product.STATUS_PARTIALLY_AVAILABLE = 1;
 Product.STATUS_NOT_APPLICABLE = 0;
 Product.STATUS_UNAVAILABLE = -1;
 Product.STATUS_UNKNOWN = -2;
@@ -86,6 +87,11 @@ STATUS_TO_CLASSES[Product.STATUS_NEW] = {
 STATUS_TO_CLASSES[Product.STATUS_AVAILABLE] = {
     containerClass: 'status available',
     iconClass: 'icon check',
+    availabilityClass: 'product--available'
+};
+STATUS_TO_CLASSES[Product.STATUS_PARTIALLY_AVAILABLE] = {
+    containerClass: 'status available',
+    iconClass: 'icon exclamation',
     availabilityClass: 'product--available'
 };
 STATUS_TO_CLASSES[Product.STATUS_NOT_APPLICABLE] = {
