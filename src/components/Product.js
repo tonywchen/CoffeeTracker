@@ -35,7 +35,7 @@ class Product extends React.Component {
     }
 
     render() {
-        let {productId, productImage, productName, statuses, createDate} = this.props.product;
+        let {productId, productImage, productName, productLink, statuses, createDate} = this.props.product;
 
         let dateStrings = Object.keys(statuses).sort();
         let latestDateString = _.last(dateStrings);
@@ -53,12 +53,14 @@ class Product extends React.Component {
                 <div className={productClassName}>
                     <LazyImage src={productImage} className="product__image" alt={productName}></LazyImage>
                     <div className="product__content">
-                        <div className="product__name">
-                            <div className="product__name-inner">
-                                <span className="product__availability">
-                                    <i className={latestClasses.iconClass}></i>
-                                </span>
+                        <div className="product__header">
+                            <div className="product__name">
                                 {productName}
+                            </div>
+                            <div className="product__action">
+                                <a href={productLink} target="_blank">
+                                    <i class="ui icon chain"></i>
+                                </a>
                             </div>
                         </div>
                         <div className="statuses">

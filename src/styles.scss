@@ -330,16 +330,25 @@ main {
     margin: 0 0.25em;
 }
 
-.product__name {
+.product__header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
     text-shadow: 1px 1px 0px var(--text-shadow);
 }
 
-.product__name-inner {
+.product__name {
     font-size: 1.6em;
     line-height: 1.2em;
+}
+
+.product__action {
+    margin: 0 0.5em;
+
+    a {
+        color: var(--text-primary-fade);
+    }
 }
 
 .statuses {
