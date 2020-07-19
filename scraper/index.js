@@ -78,7 +78,7 @@ const upsertProductUpdate = async (updateTimestamp, product, roaster, availableP
         totalChecks: 0,
         totalAvailable: 0
     });
-
+    
     let status = (availableProductMap[product._id])
         ? ProductUpdate.STATUS_AVAILABLE
         : ProductUpdate.STATUS_UNAVAILABLE;
@@ -122,7 +122,7 @@ const upsertProductUpdate = async (updateTimestamp, product, roaster, availableP
 
         let products = await Product.find({roasterId: new mongo.ObjectId(roaster._id)});
         for (let product of products) {
-            upsertProductUpdate(updateTimestamp, product, roaster, availableProductMap);
+            await upsertProductUpdate(updateTimestamp, product, roaster, availableProductMap);
         }
     }
 
