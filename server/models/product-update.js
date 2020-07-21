@@ -90,19 +90,6 @@ class ProductUpdate extends BaseModel {
             as: 'details'
         };
 
-        let groupByProductAndDate = {
-            _id: {
-                productId: '$productId',
-                dateString: '$dateString',
-            },
-            count: { '$sum': 1 },
-            dateString: { '$first': '$dateString' },
-            productId: { '$first': '$productId' },
-            productName: { '$first': '$productName' },
-            roasterName: { '$first': '$roasterName' },
-            details: { '$first': '$details' }
-        };
-
         let groupByProduct = {
             _id: {
                 productId: '$productId'
@@ -121,8 +108,9 @@ class ProductUpdate extends BaseModel {
             }
         };
 
-        let matchRecentlyAvailable = {
-            allAvailables: {'$gt': 0}
+        let finalMatch = {
+            'details.applicable': {'$ne': false},
+            'allAvailables': {'$gt': 0}
         }
 
         let aggregate = [{
@@ -132,7 +120,7 @@ class ProductUpdate extends BaseModel {
         }, {
             '$group': groupByProduct
         }, {
-            '$match': matchRecentlyAvailable
+            '$match': finalMatch
         }];
 
         let rawResults = await this.aggregate(aggregate);
@@ -212,8 +200,9 @@ class ProductUpdate extends BaseModel {
             }
         };
 
-        let matchRecentlyAvailable = {
-            allAvailables: {'$gt': 0}
+        let finalMatch = {
+            'details.applicable': {'$ne': false},
+            'allAvailables': {'$gt': 0}
         }
 
         let aggregate = [{
@@ -225,7 +214,7 @@ class ProductUpdate extends BaseModel {
         },{
             '$group': groupByProduct
         }, {
-            '$match': matchRecentlyAvailable
+            '$match': finalMatch
         }];
 
         let rawResults = await this.aggregate(aggregate);

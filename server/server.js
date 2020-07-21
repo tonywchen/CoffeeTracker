@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const port = 3001;
 const corsOptions = {
-    origin: 'http://localhost:3000'
+    origin: 'http://192.168.1.120:3000'
 };
 
 const MongoClient = require('./service/mongo');

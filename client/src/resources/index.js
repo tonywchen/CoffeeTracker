@@ -1,9 +1,11 @@
 import axios from 'axios';
 import moment from 'moment';
 
+const serverUrl = 'http://192.168.1.120:3001';
+
 const connect = () => {
     return axios.create({
-        baseURL: 'http://0.0.0.0:3001'
+        baseURL: serverUrl
     });
 };
 
