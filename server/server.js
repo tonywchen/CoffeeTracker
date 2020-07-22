@@ -2,9 +2,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const port = 3001;
+const config = require('./config.json')
+
+const host = config.server.host;
+const port = config.server.port;
 const corsOptions = {
-    origin: 'http://192.168.1.120:3000'
+    origin: config.domain
 };
 
 const MongoClient = require('./service/mongo');
@@ -14,4 +17,4 @@ app.use(require('./routes'));
 
 MongoClient.connect();
 
-app.listen(port, () => console.log(`Example app listening at http://0.0.0.0:${port}`))
+app.listen(port, () => console.log(`Example app listening at ${host}:${port}`))

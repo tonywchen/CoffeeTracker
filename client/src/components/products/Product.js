@@ -3,7 +3,9 @@ import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 
-import LazyImage from './LazyImage';
+import LazyImage from '../common/LazyImage';
+
+import {DATE_FORMAT, DATE_FORMAT_SHORT} from '../../const';
 
 class Product extends React.Component {
     state = {
@@ -21,7 +23,7 @@ class Product extends React.Component {
             let status = statuses[dateString];
             let {iconClass, containerClass} = STATUS_TO_CLASSES[status];
 
-            let date = moment(dateString, 'YYYY/MM/DD').format('MM/DD');
+            let date = moment(dateString, DATE_FORMAT).format(DATE_FORMAT_SHORT);
 
             return (
                 <div className={containerClass} key={`${productId}-${date}`}>
@@ -58,7 +60,7 @@ class Product extends React.Component {
                                 {productName}
                             </div>
                             <div className="product__action">
-                                <a href={productLink} target="_blank">
+                                <a href={productLink} target="_blank" rel="noopener noreferrer">
                                     <i class="ui icon chain"></i>
                                 </a>
                             </div>

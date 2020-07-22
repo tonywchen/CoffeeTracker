@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import _ from 'lodash';
 
-import { fetchProducts } from '../actions'; 
+import { fetchProducts } from '../../actions'; 
 import Product from './Product';
 
 class ProductList extends React.Component {

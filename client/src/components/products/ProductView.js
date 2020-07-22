@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProducts, fetchNewProducts } from '../actions'; 
+import { fetchProducts, fetchNewProducts } from '../../actions'; 
 
 import ProductList from './ProductList';
-import CoffeeCup from './CoffeeCup';
+import CoffeeCup from '../common/CoffeeCup';
 
 class ProductView extends React.Component {
     state = {
@@ -16,19 +16,15 @@ class ProductView extends React.Component {
 
         switch(this.props.type) {
             case 'all':
-                this.props.fetchProducts().then(() => {
-                    this.setState({
-                        isLoading: false
-                    });
-                });
+                this.props.fetchProducts().then(this.stopLoading);
                 break;
             default:
-                this.props.fetchNewProducts().then(() => {
-                    this.setState({
-                        isLoading: false
-                    });
-                });
+                this.props.fetchNewProducts().then(this.stopLoading);
         }
+    }
+
+    stopLoading = () => {
+        this.setState({isLoading: false});
     }
 
     renderView() {
@@ -41,7 +37,7 @@ class ProductView extends React.Component {
                     <div className="loader-icon">
                         <CoffeeCup></CoffeeCup>
                     </div>
-                    <div>Caffenating the list...</div>
+                    <div>Caffeinating the list...</div>
                 </div>
             );
             viewClassName = 'view view--stretch view--center';

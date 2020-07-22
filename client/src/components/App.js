@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
-import DarkModeProvider from './DarkModeProvider';
 import Header from './Header';
-import ProductView from './ProductView';
+import DarkModeProvider from './common/DarkModeProvider';
+import ProductView from './products/ProductView';
 
 import '../styles.scss';
 

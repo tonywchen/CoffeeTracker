@@ -1,13 +1,13 @@
 const sendmail = require('sendmail')();
-const configs = require('./configs/configs.json');
+const config = require('./configs/config.json');
 
 const info = (subject, html) => {
     if (!subject || !html) {
         return;
     }
 
-    let from = configs.email.from;
-    let to = configs.email.to;
+    let from = config.email.from;
+    let to = config.email.to;
     let fullSubject = '[CoolBeans! Info] `${subject}`';
 
     sendmail({
@@ -26,8 +26,8 @@ const alert = (subject, html) => {
         return;
     }
 
-    let from = configs.email.from;
-    let to = configs.email.to;
+    let from = config.email.from;
+    let to = config.email.to;
     let fullSubject = '[CoolBeans! Alert] `${subject}`';
 
     sendmail({

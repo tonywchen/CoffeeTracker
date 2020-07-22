@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, NavLink } from 'react-router-dom';
 
-import DarkModeContext from './DarkModeContext';
+import DarkModeContext from './common/DarkModeContext';
 
 const LINKS = [{
     to: '/',

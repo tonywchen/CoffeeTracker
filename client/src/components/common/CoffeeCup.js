@@ -1,9 +1,15 @@
 import React from 'react';
 
+const FILL_INCREASE = '#8B572A';
+const FILL_DECREASE = '#673E19';
+const INITIAL_AMOUNT = 30; // percentage filled
+const DELTA = 1; 
+const REFRESH_RATE = 16; // corresponds to around 60fps animation
+
 class CoffeeCup extends React.Component {
     state = {
-        fill: '#8B572A',
-        amount: 30
+        fill: FILL_INCREASE,
+        amount: INITIAL_AMOUNT
     }
 
     componentDidMount() {
@@ -17,27 +23,26 @@ class CoffeeCup extends React.Component {
     }
 
     refill = () => {
+        let newAmount = (this.state.amount + DELTA) % 100;
         this.setState({
-            fill: '#8B572A'
+            fill: FILL_INCREASE,
+            amount: newAmount
         });
-        return (this.state.amount + 1) % 100;
     }
 
     drinkUp = () =>{
-        this.setState({
-            fill: '#673E19'
-        });
+        let newAmount = Math.max(this.state.amount - DELTA, 0);
 
-        return Math.max(this.state.amount - 1, 0);
+        this.setState({
+            fill: FILL_DECREASE,
+            amount: newAmount
+        });
     }
 
     animate = () => {
-        let newAmount = this.action();
-        this.setState({
-            amount: newAmount
-        });
+        this.action();
 
-        this.timeout = setTimeout(this.animate, 16);
+        this.timeout = setTimeout(this.animate, REFRESH_RATE);
     }
 
     render() {
