@@ -1,7 +1,7 @@
+const yargs = require('yargs');
 const mongo = require('mongodb');
 const moment = require('moment-timezone');
 
-const Scraper = require('../scraper/scraper');
 const MongoClient = require('../service/mongo');
 
 const Product = require('../models/product');
@@ -9,11 +9,14 @@ const ProductUpdate = require('../models/product-update');
 const Roaster = require('../models/roaster');
 const RoasterUpdate = require('../models/roaster-update');
 
-const configs = require('./roasters.json');
+const email = require('./email');
+const Scraper = require('./scraper');
+
+const roasterConfigs = require('./configs/roasters.json');
 
 const scrape = async () => {
     let scraper = Scraper();
-    let scraped = await scraper.scrape(configs);
+    let scraped = await scraper.scrape(roasterConfigs);
 
     return scraped;
 }
@@ -57,6 +60,8 @@ const findOrCreateProduct = async (productData, roaster, updateTimestamp) => {
                 createDate: moment(updateTimestamp).tz(timezone).format('YYYY/MM/DD')
             }
         });
+
+        product._isNew = true;
     }
 
     return product;
@@ -103,21 +108,58 @@ const upsertProductUpdate = async (updateTimestamp, product, roaster, availableP
     });
 };
 
+const shouldSendAlerts = () => {
+    return !!yargs.argv.alert;
+};
+
+const sendInfoEmail = (currentRoasters, currentProducts, newProducts) => {
+    if (!shouldSendAlerts()) {
+        return;
+    }
+
+    let roasterTotal = currentRoasters.length;
+    let productTotal = currentProducts.filter(p => !p.isOutOfStock).length;
+    let html = `Number of Roasters: ${roasterTotal}<br/>Number of Products: ${productTotal}<br/><br/>`;
+
+    if (newProducts.length > 0) {
+        let newProductData = newProducts.map(p => {
+            return `${p.name}<br/>`;
+        });
+    
+        html += `New Products:<br/>${newProductData}`;
+    } else {
+        html += `No New Products`
+    }
+
+    email.info('Current Stock', html);    
+};
+
 (async () => {
     await MongoClient.connect();
 
     let scraped = await scrape();
     let updateTimestamp = new Date().getTime();
 
+    let currentRoasters = [];
+    let currentProducts = [];
+    let newProducts = [];
+
     for (let roasterData of scraped) {
+        currentRoasters.push(roasterData);
+
         let roaster = await findOrCreateRoaster(roasterData);
         await addRoasterUpdate(roaster._id, updateTimestamp, roasterData.rules)
 
         let availableProductMap = {};
         for (let productData of roasterData.products) {
-            let product = await findOrCreateProduct(productData, roaster, updateTimestamp);
 
+            let product = await findOrCreateProduct(productData, roaster, updateTimestamp);
             availableProductMap[product._id] = !productData.isOutOfStock;
+
+            currentProducts.push(productData);
+            if (product._isNew) {
+                newProducts.push(product);
+            }
         }
 
         let products = await Product.find({roasterId: new mongo.ObjectId(roaster._id)});
@@ -125,6 +167,8 @@ const upsertProductUpdate = async (updateTimestamp, product, roaster, availableP
             await upsertProductUpdate(updateTimestamp, product, roaster, availableProductMap);
         }
     }
+
+    sendInfoEmail(currentRoasters, currentProducts, newProducts);
 
     process.exit();
 })();

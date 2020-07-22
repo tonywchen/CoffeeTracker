@@ -17,6 +17,8 @@
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
-    "mongodb": "^3.5.9"
+    "mongodb": "^3.5.9",
+    "sendmail": "^1.6.1",
+    "yargs": "^15.4.1"
   }
 }
