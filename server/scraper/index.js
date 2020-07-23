@@ -10,7 +10,7 @@ const Roaster = require('../models/roaster');
 const RoasterUpdate = require('../models/roaster-update');
 
 const email = require('./email');
-const Scraper = require('./scraper');
+const Scraper = require('./Scraper');
 
 const roasterConfigs = require('./configs/roasters.json');
 
