@@ -8,7 +8,7 @@ const info = (subject, html) => {
 
     let from = config.email.from;
     let to = config.email.to;
-    let fullSubject = '[CoolBeans! Info] `${subject}`';
+    let fullSubject = `[CoolBeans! Info] ${subject}`;
 
     sendmail({
         from,
@@ -28,7 +28,7 @@ const alert = (subject, html) => {
 
     let from = config.email.from;
     let to = config.email.to;
-    let fullSubject = '[CoolBeans! Alert] `${subject}`';
+    let fullSubject = `[CoolBeans! Alert] ${subject}`;
 
     sendmail({
         from,
