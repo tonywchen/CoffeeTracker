@@ -10,14 +10,19 @@ const info = (subject, html) => {
     let to = config.email.to;
     let fullSubject = `[CoolBeans! Info] ${subject}`;
 
-    sendmail({
-        from,
-        to,
-        subject: fullSubject,
-        html
-    }, function(err, reply) {
-        console.log(err && err.stack);
-        console.dir(reply);
+    return new Promise((resolve, reject) => {
+        sendmail({
+            from,
+            to,
+            subject: fullSubject,
+            html
+        }, function(err, reply) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(reply);
+            }
+        });
     });
 };
 
@@ -30,14 +35,19 @@ const alert = (subject, html) => {
     let to = config.email.to;
     let fullSubject = `[CoolBeans! Alert] ${subject}`;
 
-    sendmail({
-        from,
-        to,
-        subject: fullSubject,
-        html
-    }, function(err, reply) {
-        console.log(err && err.stack);
-        console.dir(reply);
+    return new Promise((resolve, reject) => {
+        sendmail({
+            from,
+            to,
+            subject: fullSubject,
+            html
+        }, function(err, reply) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(reply);
+            }
+        });
     });
 };
 

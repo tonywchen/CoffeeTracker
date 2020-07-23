@@ -112,7 +112,7 @@ const shouldSendAlerts = () => {
     return !!yargs.argv.alert;
 };
 
-const sendInfoEmail = (currentRoasters, currentProducts, newProducts) => {
+const sendInfoEmail = async (currentRoasters, currentProducts, newProducts) => {
     if (!shouldSendAlerts()) {
         return;
     }
@@ -131,7 +131,7 @@ const sendInfoEmail = (currentRoasters, currentProducts, newProducts) => {
         html += `No New Products`
     }
 
-    email.info('Current Stock', html);    
+    await email.info('Current Stock', html);    
 };
 
 (async () => {
@@ -168,7 +168,7 @@ const sendInfoEmail = (currentRoasters, currentProducts, newProducts) => {
         }
     }
 
-    sendInfoEmail(currentRoasters, currentProducts, newProducts);
+    await sendInfoEmail(currentRoasters, currentProducts, newProducts);
 
     process.exit();
 })();
