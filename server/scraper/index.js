@@ -108,12 +108,12 @@ const upsertProductUpdate = async (updateTimestamp, product, roaster, availableP
     });
 };
 
-const shouldSendAlerts = () => {
-    return !!yargs.argv.alert;
+const shouldEmailUpdates = () => {
+    return !!yargs.argv.email;
 };
 
 const sendInfoEmail = async (currentRoasters, currentProducts, newProducts) => {
-    if (!shouldSendAlerts()) {
+    if (!shouldEmailUpdates()) {
         return;
     }
 
