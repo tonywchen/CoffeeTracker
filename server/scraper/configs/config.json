@@ -1,6 +1,7 @@
 {
     "email": {
         "from": "",
-        "to": ""
+        "to": "",
+        "sendgridApiKey": ""
     }
 }
