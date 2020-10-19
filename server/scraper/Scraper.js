@@ -44,6 +44,19 @@ const Scraper = () => {
         return result;
     };
 
+    scraper.scrapeDetail = async (config, link) => {
+        try {
+            let response = await axios(link);
+            let html = response.data;
+    
+            let detail = scraper.parseDetail(html, config);
+    
+            return detail;
+        } catch(e) {
+            return null;
+        }
+    };
+
     scraper.validateConfig = (config) => {
         if (!config.active) {
             return false;
@@ -71,7 +84,7 @@ const Scraper = () => {
         let products = $(baseMatch);
 
         let data = products.map((i, elem) => {
-            let parser = Parser($(elem), config.rules);
+            let parser = Parser($(elem), config.rules, $);
 
             let result = parser.run()
                             .name()
@@ -84,6 +97,21 @@ const Scraper = () => {
         }).get();
 
         return data;
+    };
+
+    scraper.parseDetail = (html, config) => {
+        const $ = cheerio.load(html);
+        let parser = Parser($.root(), config.rules, $);
+
+        let result = parser.run()
+                        .description()
+                        .country()
+                        .tastingNotes()
+                        .varietal()
+                        .process()
+                    .get();
+
+        return result;
     };
 
     return scraper;

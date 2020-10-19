@@ -19,6 +19,18 @@ const scrape = async () => {
     let scraped = await scraper.scrape(roasterConfigs);
 
     return scraped;
+};
+
+const scrapeDetail = async (product, roasterFid) => {
+    if (!roasterFid) {
+        return;
+    }
+    let roasterConfig = roasterConfigs[roasterFid];
+
+    let scraper = Scraper();
+    let scraped = await scraper.scrapeDetail(roasterConfig, product.link);
+    
+    return scraped;
 }
 
 const findOrCreateRoaster = async (roasterData) => {
@@ -108,6 +120,24 @@ const upsertProductUpdate = async (updateTimestamp, product, roaster, availableP
     });
 };
 
+const setProductDetail = async (product, detail = {}) => {
+    let sanitizedDetail = {
+        description: detail.description,
+        country: detail.country,
+        tastingNotes: detail.tastingNotes,
+        varietal: detail.varietal,
+        process: detail.process
+    };
+
+    await Product.update({
+        _id: product._id,
+    }, {
+        '$set': {
+            detail: sanitizedDetail
+        }
+    });
+};
+
 const shouldEmailUpdates = () => {
     return !!yargs.argv.email;
 };
@@ -139,10 +169,12 @@ const sendInfoEmail = async (currentRoasters, currentProducts, newProducts) => {
 
     let scraped = await scrape();
     let updateTimestamp = new Date().getTime();
-
+    
     let currentRoasters = [];
     let currentProducts = [];
     let newProducts = [];
+
+    let productsWithoutDetail = [];
 
     for (let roasterData of scraped) {
         currentRoasters.push(roasterData);
@@ -154,18 +186,27 @@ const sendInfoEmail = async (currentRoasters, currentProducts, newProducts) => {
         for (let productData of roasterData.products) {
 
             let product = await findOrCreateProduct(productData, roaster, updateTimestamp);
+            product.roaster = roaster;
+
             availableProductMap[product._id] = !productData.isOutOfStock;
+
+            if (!product.detail) {
+                productsWithoutDetail.push(product);
+            }
 
             currentProducts.push(productData);
             if (product._isNew) {
                 newProducts.push(product);
             }
         }
-
         let products = await Product.find({roasterId: new mongo.ObjectId(roaster._id)});
         for (let product of products) {
             await upsertProductUpdate(updateTimestamp, product, roaster, availableProductMap);
         }
+    }
+    for (let product of productsWithoutDetail) {
+        let detail = await scrapeDetail(product, product.roaster.fid);
+        await setProductDetail(product, detail);
     }
 
     await sendInfoEmail(currentRoasters, currentProducts, newProducts);

@@ -1,7 +1,7 @@
 {
     "pilot": {
         "name": "Pilot Coffee Roasters",
-        "active": true,
+        "active": false,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.pilotcoffeeroasters.com/coffee/single-origin/",
@@ -32,12 +32,74 @@
                 "value": {
                     "exists": true
                 }
+            },
+            "description": {
+                "match": "#product-tab-description",
+                "value": {
+                    "text": true
+                }
+            },
+            "tastingNotes": {
+                "match": [{
+                    "find": ".product-detail-customfield .product-information-name"
+                }, {
+                    "filter": {
+                        "text": "TASTING NOTES:"
+                    }
+                }, {
+                    "next": ".product-information-value"
+                }],
+                "value": {
+                    "text": true
+                }
+            },
+            "country": {
+                "match": [{
+                    "find": ".product-detail-customfield .product-information-name"
+                }, {
+                    "filter": {
+                        "text": "COUNTRY:"
+                    }
+                }, {
+                    "next": ".product-information-value"
+                }],
+                "value": {
+                    "text": true
+                }                
+            },
+            "varietal": {
+                "match": [{
+                    "find": ".product-detail-customfield .product-information-name"
+                }, {
+                    "filter": {
+                        "text": "VARIETAL:"
+                    }
+                }, {
+                    "next": ".product-information-value"
+                }],
+                "value": {
+                    "text": true
+                }                
+            },
+            "process": {
+                "match": [{
+                    "find": ".product-detail-customfield .product-information-name"
+                }, {
+                    "filter": {
+                        "text": "PROCESS:"
+                    }
+                }, {
+                    "next": ".product-information-value"
+                }],
+                "value": {
+                    "text": true
+                }                
             }
         }
     },
     "hatch": {
         "name": "Hatch",
-        "active": true,
+        "active": false,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.hatchcrafted.com/shop/rare-origin/",
@@ -64,12 +126,86 @@
                 "value": {
                     "attr": "href"
                 }                
+            },
+            "description": {
+                "match": ".product-description:nth-of-type(1)",
+                "value": {
+                    "text": true
+                }
+            },
+            "tastingNotes": {
+                "match": [{
+                    "find": ".product-detail-title"
+                }, {
+                    "filter": {
+                        "text": "Tasting Notes:"
+                    }
+                }, {
+                    "next": ".product-detail-description"
+                }],
+                "value": {
+                    "html": true
+                }
+            },
+            "country": {
+                "match": [{
+                    "find": ".product-detail-title"
+                }, {
+                    "filter": {
+                        "text": "Origins:"
+                    }
+                }, {
+                    "next": ".product-detail-description"
+                }],
+                "value": {
+                    "regex": {
+                        "html": true,
+                        "expression": "(?<country>.+)<br\\s*/?>",
+                        "group": "country"
+                    }
+                } 
+            },
+            "varietal": {
+                "match": [{
+                    "find": ".product-detail-title"
+                }, {
+                    "filter": {
+                        "text": "Origins:"
+                    }
+                }, {
+                    "next": ".product-detail-description"
+                }],
+                "value": {
+                    "regex": {
+                        "html": true,
+                        "expression": "Varietal: (?<varietal>.*)<br\\s*/?>",
+                        "group": "varietal"
+                    }
+                }                
+            },
+            "process": {
+                "match": [{
+                    "find": ".product-detail-title"
+                }, {
+                    "filter": {
+                        "text": "Origins:"
+                    }
+                }, {
+                    "next": ".product-detail-description"
+                }],
+                "value": {
+                    "regex": {
+                        "html": true,
+                        "expression": "Process: (?<process>.*)<br\\s*/?>",
+                        "group": "process"
+                    }
+                }                
             }
         }
     },
     "pop": {
         "name": "Pop Coffee Works",
-        "active": true,
+        "active": false,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.popcoffeeworks.com/shop"
@@ -99,12 +235,18 @@
                 "value": {
                     "hasClass": "sold-out"
                 }
+            },
+            "description": {
+                "match": ".ProductItem-details-excerpt",
+                "value": {
+                    "html": true
+                }
             }
         }
     },
     "subtext": {
         "name": "Subtext Coffee",
-        "active": true,
+        "active": false,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.subtext.coffee/collections/coffee"
@@ -137,12 +279,15 @@
                 "value": {
                     "exists": true
                 }
+            },
+            "description": {
+                "match": ".ProductMeta__Description .Rte"
             }
         }
     },
     "demello": {
         "name": "De Mello Palheta",
-        "active": true,
+        "active": false,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.hellodemello.com/product-category/coffee/og-de-mello/",
@@ -167,6 +312,68 @@
                 "value": {
                     "attr": "href"
                 }                
+            },
+            "description": {
+                "match": "#tab-description .about-us-right .wpb_text_column.wpb_content_element .wpb_wrapper",
+                "value": {
+                    "html": true
+                }
+            },
+            "tastingNotes": {
+                "match": [{
+                    "find": ".woocommerce-product-details__short-description strong, .woocommerce-product-details__short-description b"
+                }, {
+                    "filter": {
+                        "regex": "Tasting Notes|Cupping Notes"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }
+            },
+            "country": {
+                "match": [{
+                    "find": ".woocommerce-product-details__short-description strong"
+                }, {
+                    "filter": {
+                        "text": "Region:"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }
+            },
+            "varietal": {
+                "match": [{
+                    "find": ".woocommerce-product-details__short-description strong"
+                }, {
+                    "filter": {
+                        "text": "Varietal:"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }               
+            },
+            "process": {
+                "match": [{
+                    "find": ".woocommerce-product-details__short-description strong"
+                }, {
+                    "filter": {
+                        "text": "Process:"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }               
             }
         }
     },
@@ -196,6 +403,72 @@
                 "value": {
                     "attr": "href"
                 }                
+            },
+            "description": {
+                "match": "#product-description",
+                "value": {
+                    "html": true
+                }
+            },
+            "tastingNotes": {
+                "match": [{
+                    "find": "#product-description strong, #product-description b"
+                }, {
+                    "filter": {
+                        "text": "Tasting Notes"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "regex": {
+                        "textData": true,
+                        "expression": ":*(?<tastingNotes>.+)",
+                        "group": "tastingNotes"
+                    }
+                }
+            },
+            "country": {
+                "match": [{
+                    "find": "#product-description strong"
+                }, {
+                    "filter": {
+                        "text": "Region:"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }
+            },
+            "varietal": {
+                "match": [{
+                    "find": "#product-description strong"
+                }, {
+                    "filter": {
+                        "text": "Varietal:"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }               
+            },
+            "process": {
+                "match": [{
+                    "find": "#product-description strong"
+                }, {
+                    "filter": {
+                        "text": "Process:"
+                    }
+                }, {
+                    "nextSibling": true
+                }],
+                "value": {
+                    "textData": true
+                }               
             }
         }
     }
