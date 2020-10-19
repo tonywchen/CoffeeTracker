@@ -16,7 +16,29 @@ class Product extends React.Component {
         this.setState({
             collapsed: !this.state.collapsed
         });
-    };
+    }
+
+    renderData = (tastingNotes) => {
+        if (tastingNotes.length === 0) {
+            return null;
+        }
+
+        let tags = tastingNotes.map(tastingNotes => {
+            return (
+                <div className="tag" key={tastingNotes}>
+                    {tastingNotes}
+                </div>
+            );
+        });
+
+        return (
+            <div className="product__data">
+                <div className="tags">
+                    {tags}
+                </div>
+            </div>
+        )
+    }
 
     renderStatuses = (statuses, productId) => {
         return Object.keys(statuses).sort().map((dateString) => {
@@ -37,7 +59,7 @@ class Product extends React.Component {
     }
 
     render() {
-        let {productId, productImage, productName, productLink, statuses, createDate} = this.props.product;
+        let {productId, productImage, productName, productLink, statuses, createDate, tastingNotes} = this.props.product;
 
         let dateStrings = Object.keys(statuses).sort();
         let latestDateString = _.last(dateStrings);
@@ -51,7 +73,7 @@ class Product extends React.Component {
         let productClassName = productClasses.join(' ');
 
         return (
-            <div className="list-item" data-createDate={createDate} data-productId={productId}>
+            <div className="list-item" data-createdate={createDate} data-productid={productId}>
                 <div className={productClassName}>
                     <LazyImage src={productImage} className="product__image" alt={productName}></LazyImage>
                     <div className="product__content">
@@ -61,10 +83,11 @@ class Product extends React.Component {
                             </div>
                             <div className="product__action">
                                 <a href={productLink} target="_blank" rel="noopener noreferrer">
-                                    <i class="ui icon chain"></i>
+                                    <i className="ui icon chain"></i>
                                 </a>
                             </div>
                         </div>
+                        {this.renderData(tastingNotes)}
                         <div className="statuses">
                             {this.renderStatuses(statuses, productId)}
                         </div>

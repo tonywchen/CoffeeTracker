@@ -39,7 +39,20 @@ const mapUpdatesAcrossDates = (updates, dateStrings) => {
     }
 
     return fullUpdateMap;
-}
+};
+
+const separateDelimitedString = (string) => {
+    if (!string) {
+        return [];
+    }
+
+    if (typeof string !== 'string' && !(string instanceof String)) {
+        return [];
+    }
+
+    // split string by ',', '+', or '|'
+    return string.split(/\s*(?:,|\+|\|)\s*/);
+};
 
 class ProductUpdate extends BaseModel {
     static collection = 'product_update';
@@ -90,6 +103,7 @@ class ProductUpdate extends BaseModel {
             as: 'details'
         };
 
+
         let groupByProduct = {
             _id: {
                 productId: '$productId'
@@ -107,6 +121,30 @@ class ProductUpdate extends BaseModel {
                 '$sum': '$totalAvailable'
             }
         };
+
+        let groupByProduct = {
+            _id: {
+                productId: '$productId'
+            },
+            productId: { '$first': '$productId' },
+            productName: { '$first': '$productName' },
+            roasterName: { '$first': '$roasterName' },
+            details: { '$first': '$details' },
+            updates: { '$push': {
+                dateString: '$dateString',
+                totalChecks: '$totalChecks',
+                totalAvailable: '$totalAvailable'
+            }},
+            allAvailables: {
+                '$sum': '$totalAvailable'
+            }
+        };
+
+
+        let finalMatch = {
+            'details.applicable': {'$ne': false},
+            'allAvailables': {'$gt': 0}
+        }
 
         let finalMatch = {
             'details.applicable': {'$ne': false},
@@ -126,6 +164,7 @@ class ProductUpdate extends BaseModel {
         let rawResults = await this.aggregate(aggregate);
         let results = rawResults.map(({productId, updates, productName, roasterName, details}) => {
             let detail = (details)? details[0] : {};
+            let detailData = detail.detail || {};
             let metrics = detail.metrics || {};
 
             let updateMap = mapUpdatesAcrossDates(updates, dates);
@@ -137,6 +176,10 @@ class ProductUpdate extends BaseModel {
                 productImage: detail.image,
                 roasterName: roasterName,
                 createDate: metrics.createDate,
+                tastingNotes: separateDelimitedString(detailData.tastingNotes),
+                country: detailData.country,
+                process: detailData.process,
+                varietal: detailData.varietal,
                 isNew: Object.keys(updateMap).indexOf(metrics.createDate) > -1,
                 updates: updateMap
             };
@@ -167,19 +210,6 @@ class ProductUpdate extends BaseModel {
                 '$gte': fromDate,
                 '$lte': toDate
             }
-        };
-
-        let groupByProductAndDate = {
-            _id: {
-                productId: '$productId',
-                dateString: '$dateString',
-            },
-            count: { '$sum': 1 },
-            dateString: { '$first': '$dateString' },
-            productId: { '$first': '$productId' },
-            productName: { '$first': '$productName' },
-            roasterName: { '$first': '$roasterName' },
-            details: { '$first': '$details' }
         };
 
         let groupByProduct = {
@@ -220,6 +250,7 @@ class ProductUpdate extends BaseModel {
         let rawResults = await this.aggregate(aggregate);
         let results = rawResults.map(({productId, updates, productName, roasterName, details}) => {
             let detail = (details)? details[0] : {};
+            let detailData = detail.detail || {};
             let metrics = detail.metrics || {};
             
             let updateMap = mapUpdatesAcrossDates(updates, dates);
@@ -231,6 +262,10 @@ class ProductUpdate extends BaseModel {
                 productImage: detail.image,
                 roasterName: roasterName,
                 createDate: metrics.createDate,
+                tastingNotes: separateDelimitedString(detailData.tastingNotes),
+                country: detailData.country,
+                process: detailData.process,
+                varietal: detailData.varietal,
                 isNew: Object.keys(updateMap).indexOf(metrics.createDate) > -1,
                 updates: updateMap
             };
