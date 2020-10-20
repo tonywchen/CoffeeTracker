@@ -122,30 +122,6 @@ class ProductUpdate extends BaseModel {
             }
         };
 
-        let groupByProduct = {
-            _id: {
-                productId: '$productId'
-            },
-            productId: { '$first': '$productId' },
-            productName: { '$first': '$productName' },
-            roasterName: { '$first': '$roasterName' },
-            details: { '$first': '$details' },
-            updates: { '$push': {
-                dateString: '$dateString',
-                totalChecks: '$totalChecks',
-                totalAvailable: '$totalAvailable'
-            }},
-            allAvailables: {
-                '$sum': '$totalAvailable'
-            }
-        };
-
-
-        let finalMatch = {
-            'details.applicable': {'$ne': false},
-            'allAvailables': {'$gt': 0}
-        }
-
         let finalMatch = {
             'details.applicable': {'$ne': false},
             'allAvailables': {'$gt': 0}
