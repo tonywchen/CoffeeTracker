@@ -1,7 +1,7 @@
 {
     "pilot": {
         "name": "Pilot Coffee Roasters",
-        "active": false,
+        "active": true,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.pilotcoffeeroasters.com/coffee/single-origin/",
@@ -99,7 +99,7 @@
     },
     "hatch": {
         "name": "Hatch",
-        "active": false,
+        "active": true,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.hatchcrafted.com/shop/rare-origin/",
@@ -205,7 +205,7 @@
     },
     "pop": {
         "name": "Pop Coffee Works",
-        "active": false,
+        "active": true,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.popcoffeeworks.com/shop"
@@ -246,7 +246,7 @@
     },
     "subtext": {
         "name": "Subtext Coffee",
-        "active": false,
+        "active": true,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.subtext.coffee/collections/coffee"
@@ -287,7 +287,7 @@
     },
     "demello": {
         "name": "De Mello Palheta",
-        "active": false,
+        "active": true,
         "timezone": "America/Toronto",
         "pages": [
             "https://www.hellodemello.com/product-category/coffee/og-de-mello/",
@@ -327,10 +327,15 @@
                         "regex": "Tasting Notes|Cupping Notes"
                     }
                 }, {
+                    "next": true,
                     "nextSibling": true
                 }],
                 "value": {
-                    "textData": true
+                    "or": [{
+                        "textData": true
+                    }, {
+                        "html": true
+                    }]
                 }
             },
             "country": {

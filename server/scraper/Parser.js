@@ -7,6 +7,19 @@ const Parser = (root, rules, $) => {
     const parser = {};
     const result = {};
 
+    let isLogging = false;
+    const enableLogging = () => {
+        isLogging = true;
+    };
+    const disableLogging = () => {
+        isLogging = false;
+    };
+    const log = (message) => {
+        if (isLogging) {
+            console.log(message);
+        }
+    };
+
     parser.init = () => {
         return parser;
     };
@@ -37,7 +50,6 @@ const Parser = (root, rules, $) => {
                 elem = elem.find(match.find);
             }
 
-            // TODO
             if (match.filter) {
                 elem = elem.filter(function(i, el) {
                     if (match.filter.text) {
@@ -50,21 +62,50 @@ const Parser = (root, rules, $) => {
                 });
             }
 
-            if (match.next) {
-                elem = elem.next(match.next);
-            }
+            // TODO: optimize this part of the match where it is trying to find the lowest
+            // element or node containing the desired value  
+            if (match.next || match.nextSibling) {
+                let elemNext, elemNextSibiling;
 
-            if (match.nextSibling) {
-                elem = $(elem[0].nextSibling);
+                try {
+                    elemNext = $(elem).next(match.next);
+                } catch (e) {
+
+                }
+
+                try {
+                    elemNextSibiling = $(elem[0].nextSibling);
+                } catch (e) {
+
+                }
+
+                if (elemNext && elemNext[0]) {
+                    elem = elemNext;
+                } else if (elemNextSibiling && elemNextSibiling[0]) {
+                    elem = elemNextSibiling;
+                }
             }
         }
 
         return elem;
     }
 
+    // TODO: find a way to parse values from a set of options
+    // because the desired value might be in slightly different
+    // formats 
     parser._parseValue = (elem, valueRule = {}) => {
         let result = null;
         
+        if (valueRule.or) {
+            let results = valueRule.or.map((orValueRule) => {
+                return parser._parseValue(elem, orValueRule);
+            });
+
+            result = results.find((r) => {
+                return ![undefined, null].includes(r);
+            });
+        }
+
         if (valueRule.text) {
             result = elem.contents().map(function() {
                 return $(this).text();
@@ -123,7 +164,10 @@ const Parser = (root, rules, $) => {
             }
         }
 
-        return result;
+        // TODO: find out why sometimes 'undefined' or 'null' come as a string
+        return (result == undefined || result == 'undefined' || result == undefined || result == 'null')
+            ? null
+            : result;
     };
 
     parser.run = () => {
