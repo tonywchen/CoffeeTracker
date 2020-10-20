@@ -18,7 +18,7 @@ class Product extends React.Component {
         });
     }
 
-    renderData = (tastingNotes) => {
+    renderData = (tastingNotes = []) => {
         if (tastingNotes.length === 0) {
             return null;
         }
