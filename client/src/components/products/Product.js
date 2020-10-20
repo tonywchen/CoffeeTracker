@@ -52,14 +52,12 @@ class Product extends React.Component {
                 <>
                     <div
                         className={containerClass} 
-                        key={`${productId}-${date}`} 
-                        data-tip={tooltip}>
+                        key={`${productId}-${date}`}>
                         <div className="status__inner">
                             <i className={iconClass} />
                             <div>{date}</div>
                         </div>
                     </div>
-                    <ReactTooltip delayShow={100} border borderColor="rgba(255, 255, 255, 0.15)"></ReactTooltip>
                 </>
             );
         });
