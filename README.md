@@ -1,3 +1,5 @@
+Demo: https://coolbeans.tonywchen.com
+
 **TL;DR** A tracker similar to Amazon price tracker but checks for coffee bean stock status across different coffee roasters.
 
 In the past few months where we are all practicing social distancing, I have been relying online shopping from local/Canadian coffee roasters to satisfy my coffee bean needs. With the extra time to enjoy and research coffee, I begin to feel more adventurous with trying out and new or even rare coffee beans. However, often times, coffee beans that really piqued my interest sell out before I have the chance to try.
